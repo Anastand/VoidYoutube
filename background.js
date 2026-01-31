@@ -10,6 +10,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 	// Check if the user has already exceeded their daily time limit
 	if (message.action === "check-block-status") {
+		const currentSessionElapsed = message.currentSessionElapsed || 0;
 		chrome.storage.sync.get(["dailyLimitMinutes"], (data) => {
 			limit = (data.dailyLimitMinutes || 40) * 60;
 			chrome.storage.local.get([todayDate], (result) => {
@@ -22,12 +23,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					return;
 				}
 
-				// Return block status based on whether total seconds exceed the limit
-				if (exist.totalTimeSeconds > limit) {
-					sendResponse({ blockYt: true });
-				} else {
-					sendResponse({ blockYt: false });
-				}
+				let effectiveTimeElapsed =
+					exist.totalTimeSeconds + currentSessionElapsed;
+				sendResponse({ blockYt: effectiveTimeElapsed > limit });
 			});
 		});
 		// Return true to indicate an asynchronous response via sendResponse
