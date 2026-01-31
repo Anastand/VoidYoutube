@@ -3,17 +3,13 @@
 	"description": "Extension",
 	"version": "1.0",
 	"manifest_version": 3,
-	"permissions": [
-		"scripting",
-		"storage"
-	],
-	"host_permissions": [
-		"*://www.youtube.com/*"
-	],
+	"permissions": ["scripting", "storage"],
+	"host_permissions": ["*://www.youtube.com/*"],
 	"content_scripts": [
 		{
 			"matches": ["*://www.youtube.com/*"],
-			"js": ["content-script.js"]
+			"js": ["content-script.js"],
+			"css": ["homeBlocker.css"]
 		}
 	],
 	"background": {
