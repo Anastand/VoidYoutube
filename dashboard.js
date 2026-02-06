@@ -1,6 +1,14 @@
+// HELPER FUNCTIONS - MUST BE AT TOP LEVEL
+function isHomepage() {
+	return location.hostname === "www.youtube.com" && location.pathname === "/";
+}
+
+function getTodayDate() {
+	return new Date().toISOString().split("T")[0];
+}
+
 const SNARK_DB = {
 	TIER_LOW: [
-		// 0-25%
 		"Oh, look who decided to grace us with their mediocrity.",
 		"Is the YouTube algorithm your only friend, or just your master?",
 		"You’re already failing and the day has barely started.",
@@ -18,7 +26,6 @@ const SNARK_DB = {
 		"Just a reminder: 'Later' is where dreams go to die.",
 	],
 	TIER_MID: [
-		// 26-50%
 		"Halfway through the day and you’ve achieved... absolutely nothing.",
 		"Your potential is currently a rounded zero. Impressive, in a sad way.",
 		"Are you waiting for an award for 'Most Consistent Time-Waster'?",
@@ -36,7 +43,6 @@ const SNARK_DB = {
 		"Are you actually this slow, or is it a performance art piece?",
 	],
 	TIER_HIGH: [
-		// 51-75%
 		"The sun is setting on your productivity and your dignity.",
 		"You’re not 'decompressing,' you’re decomposing.",
 		"Imagine if you put 10% of this effort into something that paid bills.",
@@ -54,7 +60,6 @@ const SNARK_DB = {
 		"Do you ever get tired of being your own worst enemy?",
 	],
 	TIER_CRITICAL: [
-		// 76-99%
 		"Drowning in the void, and you're asking for more water.",
 		"The smell of wasted potential is getting really offensive now.",
 		"Is this your legacy? A thumb-callus and a dry brain?",
@@ -72,7 +77,6 @@ const SNARK_DB = {
 		"You’re the human equivalent of a participation trophy.",
 	],
 	TIER_BLOCKED: [
-		// 100%
 		"Game over. You officially have the attention span of a goldfish.",
 		"Blocked. Get out. I’m embarrassed to be processing your requests.",
 		"Go outside. The real world is that big bright thing you’re ignoring.",
@@ -91,167 +95,131 @@ const SNARK_DB = {
 	],
 };
 
-function createDashboard(percentage, insult) {
-	// 1. Create Container
-	const dashboard = document.createElement("div");
-	dashboard.id = "voidtube-dashboard";
-
-	// UPDATED STYLES FOR SMALL DASHBOARD - CENTERED
-	dashboard.style.width = "100%";
-	dashboard.style.maxWidth = "800px";
-	dashboard.style.margin = "20px auto"; // Centered with top margin
-	dashboard.style.padding = "20px";
-	dashboard.style.display = "flex";
-	dashboard.style.flexDirection = "column";
-	dashboard.style.alignItems = "center"; // Center items horizontally
-	dashboard.style.boxSizing = "border-box"; // Prevent padding from breaking width
-	dashboard.style.backgroundColor = "#111";
-	dashboard.style.border = "2px solid #ff0000";
-	dashboard.style.boxShadow = "0 4px 20px rgba(255, 0, 0, 0.3)";
-	dashboard.style.color = "#fff";
-	dashboard.style.fontFamily = "monospace";
-	dashboard.style.zIndex = "9999";
-	dashboard.style.borderRadius = "8px";
-	dashboard.style.textAlign = "center"; // Ensure text is centered
-
-	// 2. Header Text (Time Spent)
-	const timeText = document.createElement("h1");
-	timeText.textContent = `${percentage}% WASTED`;
-	timeText.id = "vt-time-text";
-	timeText.style.fontSize = "28px";
-	timeText.style.margin = "0 0 15px 0";
-	timeText.style.color = "#ff0000";
-	timeText.style.fontWeight = "bold";
-	timeText.style.textAlign = "center";
-	timeText.style.width = "100%";
-
-	// 3. Progress Bar
-	const barContainer = document.createElement("div");
-	barContainer.style.width = "100%";
-	barContainer.style.maxWidth = "600px"; // Constrain bar width
-	barContainer.style.height = "10px";
-	barContainer.style.backgroundColor = "#333";
-	barContainer.style.margin = "0 auto 15px auto"; // Centered
-	barContainer.style.borderRadius = "5px";
-	barContainer.style.overflow = "hidden";
-
-	const barFill = document.createElement("div");
-	barFill.id = "vt-bar-fill";
-	barFill.style.height = "100%";
-	barFill.style.width = `${percentage}%`;
-	barFill.style.backgroundColor = "#ff0000";
-	barFill.style.transition = "width 0.3s ease";
-
-	barContainer.appendChild(barFill);
-
-	// 4. Snarky Message
-	const messageText = document.createElement("p");
-	messageText.textContent = insult;
-	messageText.id = "vt-message";
-	messageText.style.fontSize = "14px";
-	messageText.style.lineHeight = "1.5";
-	messageText.style.color = "#ccc";
-	messageText.style.textAlign = "center";
-	messageText.style.margin = "0";
-	messageText.style.width = "100%";
-
-	// 5. Assemble
-	dashboard.appendChild(timeText);
-	dashboard.appendChild(barContainer);
-	dashboard.appendChild(messageText);
-
-	// 6. INJECTION - Insert before the content grid
-	const browseContainer = document.querySelector(
-		'ytd-browse[page-subtype="home"]',
-	);
-
-	if (browseContainer) {
-		// Insert as first child so it appears above the void
-		browseContainer.prepend(dashboard, browseContainer.firstChild);
-	} else {
-		document.body.appendChild(dashboard);
-	}
-}
-
 function updateDashboard(percentage, insult) {
 	const timeText = document.getElementById("vt-time-text");
 	const barFill = document.getElementById("vt-bar-fill");
 	const messageText = document.getElementById("vt-message");
 
 	if (timeText) timeText.textContent = `${percentage}% WASTED`;
-	if (barFill) barFill.style.width = `${percentage}%`;
+	if (barFill) barFill.style.width = `${Math.min(percentage, 100)}%`;
 	if (messageText) messageText.textContent = insult;
 }
 
-function VoidtubeDashboard() {
-	let insult;
-	let percentage;
-	let todayDate = new Date().toISOString().split("T")[0];
+function createDashboard(percentage, insult) {
+	const dashboard = document.createElement("div");
+	dashboard.id = "voidtube-dashboard";
 
-	function isHomepage() {
-		return location.hostname === "www.youtube.com" && location.pathname === "/";
+	// Updated Container: Wider, brutalist layout
+	dashboard.style.cssText = `
+        width: 100%;
+        max-width: 1000px;
+        margin: 10px auto 10px auto;
+        padding: 25px;
+        background-color: #0a0a0a;
+        border: 2px solid #ff0000;
+        box-shadow: 0 0 25px rgba(255, 0, 0, 0.3);
+        color: #fff;
+        font-family: 'Courier New', monospace;
+        // z-index: 9999;
+        border-radius: 4px;
+        box-sizing: border-box;
+    `;
+
+	dashboard.innerHTML = `
+        <h1 id="vt-time-text" style="font-size: 42px; color: #ff0000; margin: 0 0 15px 0; text-align: left;">${percentage}% WASTED</h1>
+
+        <div style="width: 100%; height: 8px; background: #222; margin-bottom: 20px; border-radius: 4px; overflow: hidden;">
+            <div id="vt-bar-fill" style="width: ${Math.min(percentage, 100)}%; height: 100%; background: #ff0000; transition: width 0.5s ease-out;"></div>
+        </div>
+
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px;">
+            <!-- Message takes 3/4 space -->
+            <p id="vt-message" style="flex: 3; color: #eee; font-size: 18px; margin: 0; text-align: left; line-height: 1.4; border-left: 3px solid #ff0000; padding-left: 15px;">
+                ${insult}
+            </p>
+
+            <!-- Button takes 1/4 space and sits in the bottom corner -->
+            <div style="flex: 1; text-align: right;">
+                <button id="vt-sync-btn" style="background: transparent; border: 1px solid #ff0000; color: #ff0000; cursor: pointer; padding: 10px 20px; font-family: monospace; font-weight: bold; font-size: 14px; transition: all 0.2s ease;">
+                    [ REFRESH_STATS ]
+                </button>
+            </div>
+        </div>
+    `;
+
+	const browseContainer = document.querySelector(
+		'ytd-browse[page-subtype="home"]',
+	);
+	if (browseContainer) {
+		browseContainer.prepend(dashboard);
+		document
+			.getElementById("vt-sync-btn")
+			.addEventListener("click", VoidtubeDashboard);
+
+		// Add hover effect via JS since we aren't using an external CSS file for this part
+		const btn = document.getElementById("vt-sync-btn");
+		btn.onmouseover = () => {
+			btn.style.background = "#ff0000";
+			btn.style.color = "#fff";
+		};
+		btn.onmouseout = () => {
+			btn.style.background = "transparent";
+			btn.style.color = "#ff0000";
+		};
+	} else {
+		document.body.appendChild(dashboard);
 	}
+}
 
-	chrome.storage.local.get([todayDate], (result) => {
-		let exist = result[todayDate];
-		let totalTime = exist?.totalTimeSeconds;
-		chrome.storage.sync.get("dailyLimitMinutes", (data) => {
-			let dailyLimit = data.dailyLimitMinutes;
-			percentage = Math.round((totalTime / (dailyLimit * 60)) * 100);
+function VoidtubeDashboard() {
+	const todayDate = getTodayDate();
 
-			if (percentage <= 25) {
-				insult =
-					SNARK_DB.TIER_LOW[
-						Math.floor(Math.random() * SNARK_DB.TIER_LOW.length)
-					];
-			} else if (percentage <= 50) {
-				insult =
-					SNARK_DB.TIER_MID[
-						Math.floor(Math.random() * SNARK_DB.TIER_MID.length)
-					];
-			} else if (percentage <= 75) {
-				insult =
-					SNARK_DB.TIER_HIGH[
-						Math.floor(Math.random() * SNARK_DB.TIER_HIGH.length)
-					];
-			} else if (percentage <= 99) {
-				insult =
-					SNARK_DB.TIER_CRITICAL[
-						Math.floor(Math.random() * SNARK_DB.TIER_CRITICAL.length)
-					];
+	chrome.storage.local.get([todayDate], (local) => {
+		chrome.storage.sync.get("dailyLimitMinutes", (sync) => {
+			const totalTime = local[todayDate]?.totalTimeSeconds || 0;
+			const limitMinutes = sync.dailyLimitMinutes || 30;
+			const limitSeconds = limitMinutes * 60;
+			const percentage = Math.round((totalTime / limitSeconds) * 100);
+
+			let tier;
+			if (percentage <= 25) tier = SNARK_DB.TIER_LOW;
+			else if (percentage <= 50) tier = SNARK_DB.TIER_MID;
+			else if (percentage <= 75) tier = SNARK_DB.TIER_HIGH;
+			else if (percentage <= 99) tier = SNARK_DB.TIER_CRITICAL;
+			else tier = SNARK_DB.TIER_BLOCKED;
+
+			const insult = tier[Math.floor(Math.random() * tier.length)];
+
+			const existing = document.getElementById("voidtube-dashboard");
+			if (existing) {
+				updateDashboard(percentage, insult);
 			} else {
-				insult =
-					SNARK_DB.TIER_BLOCKED[
-						Math.floor(Math.random() * SNARK_DB.TIER_BLOCKED.length)
-					];
-			}
-
-			if (isHomepage()) {
-				const injectedYtElement = document.getElementById("voidtube-dashboard");
-				if (!injectedYtElement) {
-					createDashboard(percentage, insult);
-				} else {
-					updateDashboard(percentage, insult);
-				}
+				createDashboard(percentage, insult);
 			}
 		});
 	});
 }
 
-// Initial call
-VoidtubeDashboard();
+function tryInject(retryCount = 0) {
+	if (!isHomepage()) return;
 
-// Navigation Polling to handle SPA
-// Navigation Polling to handle SPA
-setInterval(() => {
-	const dashboard = document.getElementById("voidtube-dashboard");
-	const isHome =
-		location.hostname === "www.youtube.com" && location.pathname === "/";
-
-	if (dashboard && !isHome) {
-		dashboard.remove(); // Remove if left homepage
-	} else if (!dashboard && isHome) {
-		VoidtubeDashboard(); // Create dashboard on homepage
+	const container = document.querySelector('ytd-browse[page-subtype="home"]');
+	if (container) {
+		VoidtubeDashboard();
+	} else if (retryCount < 30) {
+		setTimeout(() => tryInject(retryCount + 1), 333);
 	}
-	// Don't refresh while on homepage - let the data update naturally
-}, 2000); // Longer interval, just for navigation detection
+}
+
+// NAVIGATION ENGINE
+window.addEventListener("yt-navigate-finish", () => {
+	const d = document.getElementById("voidtube-dashboard");
+	if (!isHomepage()) {
+		if (d) d.remove();
+	} else {
+		tryInject();
+	}
+});
+
+// Initial run for landing/refresh
+tryInject();
