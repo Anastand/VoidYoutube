@@ -1,3 +1,5 @@
+// this file is applicable to work on the youtube page
+
 // Attempt to find the video element on the page
 let video = document.querySelector("video");
 

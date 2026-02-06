@@ -8,7 +8,8 @@
 	"content_scripts": [
 		{
 			"matches": ["*://www.youtube.com/*"],
-			"js": ["content-script.js"],
+			"exclude_matches": ["*://www.youtube.com/feed/you*"],
+			"js": ["content-script.js", "dashboard.js"],
 			"css": ["homeBlocker.css"]
 		}
 	],
@@ -17,6 +18,5 @@
 	},
 	"action": {
 		"default_popup": "popup.html"
-		
 	}
 }
