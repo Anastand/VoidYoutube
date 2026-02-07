@@ -1,29 +1,57 @@
-# VoidTube Roadmap
+# VoidTube Roadmap (Code-Aligned)
 
-## Phase 1: Core MVP (SHIPPED)
-- [x] Daily time tracking with reset
-- [x] Configurable limit via popup  
-- [x] Real-time polling enforcement
-- [x] Homepage CSS nuke
-- [x] Dynamic limit update without refresh
+This README reflects the current state of the code in:
+- `manifest.json`
+- `background.js`
+- `content-script.js`
+- `dashboard.js`
+- `popup.html`
+- `popup.js`
+- `homeBlocker.css`
 
-### Known Issues (Deferred)
-- [ ] **Multi-tab race condition:** Concurrent videos on 2+ tabs don't aggregate time correctly. Each tab checks limit individually.
-- [ ] **Cross-midnight logging:** Videos playing across midnight log entirely to new day (acceptable edge case).
-- [ ] **Input validation:** Negative numbers in popup aren't rejected (silently converted).
+## Current Build Snapshot
+- Chrome Extension using Manifest V3.
+- Watch-time logging in `chrome.storage.local` by date key (`YYYY-MM-DD`).
+- Configurable daily limit stored in `chrome.storage.sync`.
+- Block checks via message passing (`check-block-status`).
+- Real-time polling while video is playing (10s interval).
+- Homepage dashboard injection with percentage bar and snark message.
+- Popup UI for setting the limit.
+
+## Phase 1: Core MVP
+- [x] Daily time tracking by day key in local storage
+- [x] Configurable limit via popup
+- [x] Real-time polling enforcement while playing
+- [x] Dynamic limit update without page refresh (dashboard + polling behavior)
+- [ ] Homepage CSS nuke (currently commented out in `homeBlocker.css`)
 
 ## Phase 2: Dashboard & Analytics
-- [ ] Homepage overlay with "Time Spent Today" counter
-- [ ] Percentage of limit used (progress bar)
-- [ ] Snarky status messages based on usage
-- [ ] Creator statistics (top channels by time)
+- [x] Homepage overlay/dashboard injected on YouTube home
+- [x] Percentage of limit used (progress bar)
+- [x] Snarky status messages based on usage tiers
+- [ ] Explicit "Time Spent Today" counter (minutes/seconds value not shown directly)
+- [ ] Creator/channel statistics (top channels by time)
 
-## Phase 3: AI Integration  
+## Phase 3: AI Integration
 - [ ] OpenRouter API integration for video categorization
 - [ ] "Entertainment" vs "Educational" classification
 - [ ] Different limits for different content types
 - [ ] CSV export of "Intent vs Reality"
 
 ## Phase 4: Network Hardening
-- [ ] declarativeNetRequest to block recommendation APIs
+- [ ] `declarativeNetRequest` to block recommendation APIs
 - [ ] Session mode (unlock for X minutes, then lock for Y minutes)
+
+## Known Gaps In Current Code
+- [ ] Multi-tab race condition: per-tab checks can miss combined concurrent watch time.
+- [ ] Cross-midnight logging: active session is fully attributed to date at pause/log time.
+- [ ] Input validation: popup accepts invalid values (`NaN`, negative, zero edge cases).
+- [ ] Inconsistent default limit: background defaults to `40`, popup/dashboard imply `30`.
+- [ ] Session-finalization gaps: watch time is mainly logged on `pause`, so abrupt tab close/navigation can miss time.
+
+## Notes
+- Additional working notes are in `readme/`:
+- `background.md`
+- `content-script.md`
+- `idea.md`
+- `reply.md`
