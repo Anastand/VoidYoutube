@@ -2,7 +2,6 @@
 
 // Attempt to find the video element on the page
 let video = document.querySelector("video");
-
 // If video doesn't exist yet, keep checking; this handles YouTube's dynamic content loading
 if (!video) {
 	const checkInterval = setInterval(() => {
@@ -22,6 +21,8 @@ if (!video) {
  */
 
 function attachListeners() {
+	let videoTitle;
+	let creator;
 	let pollingIntervalId = null; // Store interval ID here
 	let startTime;
 	let capExceeded = false;
@@ -96,9 +97,17 @@ function attachListeners() {
 
 	// Triggered when the video starts playing
 	video.addEventListener("play", () => {
+		videoTitle =
+			document.querySelector("#below #title h1")?.textContent?.trim() ||
+			"Not-Recorded";
+		creator =
+			document
+				.querySelector("ytd-video-owner-renderer #channel-name a")
+				?.textContent?.trim() || "Not-Recorded";
 		console.log("PLAY EVENT FIRED");
 		startTime = new Date(); // Track the current time when playback starts
 		startPooling();
+
 		// Prevent playback if the cap is already reached
 		chrome.runtime.sendMessage(
 			{
@@ -134,7 +143,13 @@ function attachListeners() {
 
 		// Send the duration to the background script to update total watch time
 		chrome.runtime.sendMessage(
-			{ action: "log-watch-time", elapsed: elapsed, url: window.location.href },
+			{
+				action: "log-watch-time",
+				elapsed: elapsed,
+				url: window.location.href,
+				creator: creator,
+				videoTitle: videoTitle,
+			},
 			(response) => {
 				console.log("log watch time", response);
 

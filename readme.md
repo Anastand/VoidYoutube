@@ -24,22 +24,20 @@ This README reflects the current state of the code in:
 - [x] Real-time polling enforcement while playing
 - [x] Dynamic limit update without page refresh (dashboard + polling behavior)
 - [ ] Homepage CSS nuke (currently commented out in `homeBlocker.css`)
+- [ ] fix the navigation logic
 
 ## Phase 2: Dashboard & Analytics
 - [x] Homepage overlay/dashboard injected on YouTube home
 - [x] Percentage of limit used (progress bar)
 - [x] Snarky status messages based on usage tiers
-- [ ] Explicit "Time Spent Today" counter (minutes/seconds value not shown directly)
-- [ ] Creator/channel statistics (top channels by time)
+- [x] Explicit "Time Spent Today" counter (minutes/seconds value not shown directly)
+- [x] Creator/channel statistics (top channels by time)
 
 ## Phase 3: AI Integration
-- [ ] OpenRouter API integration for video categorization
-- [ ] "Entertainment" vs "Educational" classification
 - [ ] Different limits for different content types
-- [ ] CSV export of "Intent vs Reality"
+- [ ] CSV export of day
 
 ## Phase 4: Network Hardening
-- [ ] `declarativeNetRequest` to block recommendation APIs
 - [ ] Session mode (unlock for X minutes, then lock for Y minutes)
 
 ## Known Gaps In Current Code

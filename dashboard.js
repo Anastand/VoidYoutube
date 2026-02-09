@@ -1,3 +1,5 @@
+// dashboard.js
+
 // 1. HELPER FUNCTIONS - MUST BE AT TOP LEVEL
 function isHomepage() {
 	return location.hostname === "www.youtube.com" && location.pathname === "/";
@@ -88,7 +90,6 @@ function createDashboard(percentage, insult, limitMinutes) {
 	const dashboard = document.createElement("div");
 	dashboard.id = "voidtube-dashboard";
 
-	// Brutalist styling - Center-aligned, full width maxed at 1100px
 	dashboard.style.cssText = `
         width: 100%;
         max-width: 1100px;
@@ -112,15 +113,17 @@ function createDashboard(percentage, insult, limitMinutes) {
         </div>
 
         <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 40px;">
-            <!-- Message takes 3/4 space -->
             <p id="vt-message" style="flex: 3; color: #fff; font-size: 22px; margin: 0; line-height: 1.2; font-weight: bold; text-transform: uppercase;">
                 ${insult}
             </p>
 
-            <!-- Controls take 1/4 space -->
             <div style="flex: 1; display: flex; flex-direction: column; align-items: flex-end; gap: 15px;">
                 <button id="vt-sync-btn" style="background: transparent; border: 2px solid #ff0000; color: #ff0000; cursor: pointer; padding: 10px 20px; font-family: monospace; font-weight: 900; font-size: 14px;">
                     [ REFRESH_STATS ]
+                </button>
+
+                <button id="vt-toggle-dealers" style="background: transparent; border: 2px solid #ff0000; color: #ff0000; cursor: pointer; padding: 10px 20px; font-family: monospace; font-weight: 900; font-size: 14px;">
+                    [ SHOW_DEALERS ]
                 </button>
 
                 <div style="border: 1px solid #333; padding: 15px; background: #111; width: 220px; box-sizing: border-box;">
@@ -132,27 +135,110 @@ function createDashboard(percentage, insult, limitMinutes) {
                 </div>
             </div>
         </div>
+
+        <div id="vt-dealers-container" style="display: none; margin-top: 30px;">
+            <table id="vt-dealers-table" style="width: 100%; border-collapse: collapse; font-family: 'Courier New', monospace;">
+                <thead>
+                    <tr style="border-bottom: 2px solid #ff0000;">
+                        <th style="text-align: left; padding: 10px; color: #ff0000; font-size: 14px; text-transform: uppercase;">CREATOR</th>
+                        <th style="text-align: right; padding: 10px; color: #ff0000; font-size: 14px; text-transform: uppercase;">TIME</th>
+                        <th style="text-align: right; padding: 10px; color: #ff0000; font-size: 14px; text-transform: uppercase;">%</th>
+                    </tr>
+                </thead>
+                <tbody id="vt-dealers-tbody"></tbody>
+            </table>
+        </div>
     `;
 
 	const browseContainer = document.querySelector(
 		'ytd-browse[page-subtype="home"]',
 	);
-	if (browseContainer) {
-		browseContainer.prepend(dashboard);
+	if (!browseContainer) return;
 
-		// Listeners
-		document
-			.getElementById("vt-sync-btn")
-			.addEventListener("click", VoidtubeDashboard);
-		document.getElementById("vt-limit-button").addEventListener("click", () => {
-			const val = parseInt(document.getElementById("vt-limit-input").value);
-			if (val > 0) {
-				chrome.storage.sync.set({ dailyLimitMinutes: val }, () => {
-					VoidtubeDashboard(); // Re-render immediately
-				});
-			}
-		});
+	browseContainer.prepend(dashboard);
+
+	document
+		.getElementById("vt-sync-btn")
+		.addEventListener("click", VoidtubeDashboard);
+
+	document
+		.getElementById("vt-toggle-dealers")
+		.addEventListener("click", toggleDealers);
+
+	document.getElementById("vt-limit-button").addEventListener("click", () => {
+		const raw = document.getElementById("vt-limit-input").value;
+		const val = parseInt(raw, 10);
+
+		if (Number.isFinite(val) && val > 0) {
+			chrome.storage.sync.set({ dailyLimitMinutes: val }, () => {
+				VoidtubeDashboard();
+			});
+		}
+	});
+}
+
+// toggle Function
+function toggleDealers() {
+	const container = document.getElementById("vt-dealers-container");
+	const button = document.getElementById("vt-toggle-dealers");
+
+	if (!container || !button) return;
+
+	const isVisible = container.style.display !== "none";
+
+	if (isVisible) {
+		container.style.display = "none";
+		button.textContent = "[ SHOW_DEALERS ]";
+	} else {
+		container.style.display = "block";
+		button.textContent = "[ HIDE_DEALERS ]";
+		renderDealersTable();
 	}
+}
+
+// renderDealersTable
+function renderDealersTable() {
+	const tbody = document.getElementById("vt-dealers-tbody");
+	if (!tbody) return;
+
+	tbody.innerHTML = "";
+
+	const todayDate = getTodayDate();
+	chrome.storage.local.get([todayDate], (local) => {
+		const sessions = local[todayDate]?.session || [];
+
+		const dealers = getTopDealers(sessions, 5);
+
+		if (!dealers || dealers.length === 0) {
+			tbody.innerHTML = `
+				<tr>
+					<td colspan="3" style="padding: 20px; color: #666; text-align: center;">
+						NO DATA YET. START WASTING TIME FIRST.
+					</td>
+				</tr>
+			`;
+			return;
+		}
+
+		dealers.forEach((dealer, index) => {
+			const row = document.createElement("tr");
+			row.style.cssText = `border-bottom: 1px solid #222;`;
+
+			row.innerHTML = `
+				<td style="padding: 12px 10px; color: #fff; font-size: 14px;">
+					${index + 1}. ${dealer.creator}
+				</td>
+				<td style="padding: 12px 10px; color: #aaa; font-size: 14px; text-align: right;">
+					${dealer.timeString}
+				</td>
+				<td style="padding: 12px 10px; color: #ff0000; font-size: 14px; text-align: right; font-weight: bold;">
+					${dealer.percentage}%
+				</td>
+			`;
+
+			tbody.appendChild(row);
+		});
+	});
 }
 
 // 4. CONTROLLER FUNCTION
@@ -164,7 +250,9 @@ function VoidtubeDashboard() {
 			const totalTime = local[todayDate]?.totalTimeSeconds || 0;
 			const limitMinutes = sync.dailyLimitMinutes || 30;
 			const limitSeconds = limitMinutes * 60;
-			const percentage = Math.round((totalTime / limitSeconds) * 100);
+
+			const percentage =
+				limitSeconds > 0 ? Math.round((totalTime / limitSeconds) * 100) : 0;
 
 			let tier;
 			if (percentage <= 25) tier = SNARK_DB.TIER_LOW;
@@ -176,12 +264,12 @@ function VoidtubeDashboard() {
 			const insult = tier[Math.floor(Math.random() * tier.length)];
 
 			const existing = document.getElementById("voidtube-dashboard");
-			if (isHomepage()) {
-				if (existing) {
-					updateDashboard(percentage, insult, limitMinutes);
-				} else {
-					createDashboard(percentage, insult, limitMinutes);
-				}
+			if (!isHomepage()) return;
+
+			if (existing) {
+				updateDashboard(percentage, insult, limitMinutes);
+			} else {
+				createDashboard(percentage, insult, limitMinutes);
 			}
 		});
 	});

@@ -4,7 +4,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 	// Get the current date in YYYY-MM-DD format to use as a key for daily storage
 	let todayDate = new Date().toISOString().split("T")[0];
-
 	// Set the daily limit from the user's preferences
 	let limit = null; // must be in seconds
 
@@ -12,7 +11,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (message.action === "check-block-status") {
 		const currentSessionElapsed = message.currentSessionElapsed || 0;
 		chrome.storage.sync.get(["dailyLimitMinutes"], (data) => {
-			limit = (data.dailyLimitMinutes || 40) * 60;
+			limit = (data.dailyLimitMinutes || 30) * 60;
+
 			chrome.storage.local.get([todayDate], (result) => {
 				console.log(result);
 				let exist = result[todayDate];
@@ -37,8 +37,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (message.action === "log-watch-time") {
 		const elapsed = message.elapsed;
 		const url = message.url;
+		const creator = message.creator;
+		const videoTitle = message.videoTitle;
 		chrome.storage.sync.get(["dailyLimitMinutes"], (data) => {
-			const limit = (data.dailyLimitMinutes || 40) * 60;
+			const limit = (data.dailyLimitMinutes || 30) * 60;
 			chrome.storage.local.get([todayDate], (result) => {
 				let exist = result[todayDate];
 				console.log(result);
@@ -49,14 +51,23 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					exist = {
 						date: todayDate,
 						totalTimeSeconds: elapsed,
-						session: [{ videoUrl: url, watchTime: elapsed }],
+						session: [
+							{
+								videoTitle: videoTitle,
+								creator: creator,
+								watchTime: elapsed,
+								videoUrl: url,
+							},
+						],
 					};
 				} else {
 					// Increment total time and append the specific session details
 					exist.totalTimeSeconds += elapsed;
 					exist.session.push({
-						videoUrl: url,
+						videoTitle: videoTitle,
+						creator: creator,
 						watchTime: elapsed,
+						videoUrl: url,
 					});
 				}
 

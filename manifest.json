@@ -9,7 +9,7 @@
 		{
 			"matches": ["*://www.youtube.com/*"],
 			"exclude_matches": ["*://www.youtube.com/feed/you*"],
-			"js": ["content-script.js", "dashboard.js"],
+			"js": ["content-script.js", "dashboard.js", "analytics.js"],
 			"css": ["homeBlocker.css"],
 			"run_at": "document_end"
 		}
