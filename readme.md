@@ -42,6 +42,10 @@ This project demonstrates proficiency in browser environments and modern JavaScr
 - **📉 Markdown Export:** A built-in pipeline to export usage data into structured Markdown for personal journaling.
 - **⚠️ Active Limiting:** Visual progress bars and warnings when user-defined daily limits are reached.
 
+## Known Technical Debt
+- multi tab race condition: doens't record watch time data for multiple yt tab 
+
+
 ---
 
 ## Technical Stack
