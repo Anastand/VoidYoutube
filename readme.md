@@ -1,64 +1,72 @@
 # 🌌 VoidTube: YouTube Productivity & Analytics Engine
 
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/Anastand/VoidYoutube?color=blueviolet)](https://github.com/Anastand/VoidYoutube/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 **VoidTube** is a sophisticated Chrome Extension (Manifest V3) designed to transform YouTube from a distraction-filled rabbit hole into a controlled, analyzed utility. It tracks consumption patterns, enforces time limits, and provides deep insights into watch behavior directly within the YouTube UI.
 
 ---
 
-## 🚀 Why this project? (Technical Highlights)
+## 📺 Demo
 
-For recruiters and developers, this project demonstrates proficiency in:
-- **Modern Extension Architecture:** Built using **Manifest V3**, utilizing Service Workers for background persistence and efficient resource management.
-- **Dynamic DOM Injection:** Overcoming the challenges of YouTube’s Single-Page Application (SPA) architecture to inject a custom dashboard and progress tracking UI.
-- **State Management & Persistence:** Implementing a robust data pipeline using `chrome.storage` to manage real-time session logs, weekly aggregations, and user configurations.
-- **Advanced Event Handling:** Monitoring YouTube-specific lifecycle events (like `yt-navigate-start`) and browser events to ensure accurate data logging across multiple tabs.
+| 🎥 Full Video Walkthrough |
+| :---: |
+| [![YouTube Demo](https://img.shields.io/badge/YouTube-Watch_Demo-red?style=for-the-badge&logo=youtube)](https://youtu.be/EFV6m1Znz7c) |
+
+---
+
+## 🖼️ Visual Gallery
+
+| Dashboard (In-Page Injection) | Void Mode (Feed Blur) | Statistics Popup |
+| :---: | :---: | :---: |
+| <img src="https://github.com/user-attachments/assets/a14e4cde-84f3-4025-9aba-680071e16c95" width="280" alt="Dashboard" /> | <img src="https://github.com/user-attachments/assets/ea30cf7c-62ba-4693-89fc-a2fa29ba66ad" width="280" alt="Void Mode" /> | <img src="https://github.com/user-attachments/assets/717a784d-e565-4f42-9d41-7fe8a4aef665" width="280" alt="Popup" /> |
+
+---
+
+## 🚀 Engineering Highlights
+
+This project demonstrates proficiency in browser environments and modern JavaScript:
+
+- **Manifest V3 Architecture:** Utilizes Background Service Workers for non-blocking data processing and resource management.
+- **SPA Lifecycle Management:** Overcomes YouTube's Single-Page Application (SPA) architecture by hooking into internal events like `yt-navigate-start` and `beforeunload` for high-accuracy session tracking.
+- **Data Engineering:** Implemented a rolling data pipeline using `chrome.storage.local`. Daily logs are automatically aggregated into weekly summaries to optimize storage limits and performance.
+- **Dynamic DOM Injection:** Built a custom UI dashboard that is seamlessly injected into the YouTube DOM without breaking existing site functionality or event listeners.
 
 ---
 
 ## ✨ Key Features
 
-- **⏱️ Real-Time Usage Tracking:** Precision logging of daily and weekly watch time.
-- **📊 Creator Insights:** Automatically identifies and ranks your most-watched creators to help audit your "information diet."
-- **🛡️ Void Mode (Distraction Blocking):** A customizable CSS-injection engine that blurs or hides the home feed to prevent doom-scrolling.
-- **📉 Data Export:** A built-in pipeline to convert raw browser storage into structured Markdown summaries for external journaling or habit tracking.
-- **⚠️ Smart Limits:** User-defined thresholds that trigger visual warnings when daily usage is exceeded.
+- **⏱️ Precision Tracking:** Accurate logging of daily and weekly watch time per creator.
+- **📊 Creator Breakdown:** Automatically identifies "Top Creators" to help users audit their information diet.
+- **🛡️ Void Mode:** A distraction-blocking engine that uses CSS injection to blur the home feed and sidebar.
+- **📉 Markdown Export:** A built-in pipeline to export usage data into structured Markdown for personal journaling.
+- **⚠️ Active Limiting:** Visual progress bars and warnings when user-defined daily limits are reached.
 
 ---
 
-## 🛠️ Technical Deep Dive
+## 🛠️ Technical Stack
 
-### 1. Handling SPA Navigation
-YouTube doesn't trigger standard page reloads. VoidTube solves this by hooking into the `yt-navigate-start` and `beforeunload` events, ensuring that the "watch session" logic remains accurate even as the user clicks through videos.
-
-### 2. The Data Pipeline
-To prevent storage bloat, VoidTube implements a rolling log system:
-- **Daily Log:** High-resolution tracking of every video session.
-- **Weekly Rollup:** At the end of a cycle, the system aggregates daily data into a `weeklySummary` and clears the logs, maintaining a high-performance footprint.
-
-### 3. Manifest V3 Service Workers
-Utilizing `background.js` as a service worker to handle asynchronous messaging between the **Popup** (UI), **Content Scripts** (Logic), and **Storage API** without blocking the main browser thread.
+- **Language:** JavaScript (ES6+)
+- **API:** Web Extensions API (Manifest V3)
+- **Styling:** CSS3 (Dynamic Injection)
+- **Data:** Chrome Storage API
 
 ---
 
 ## 🏗️ Installation (Development Mode)
 
-1. Clone this repository: 
+1. **Clone the repository:**
    ```bash
    git clone https://github.com/Anastand/VoidYoutube.git
    ```
-Open Chrome and navigate to chrome://extensions/.
-Enable "Developer mode" in the top right corner.
-Click "Load unpacked" and select the project folder.
+- Open Extensions Page: Navigate to chrome://extensions/ in your Chrome browser.
+- Enable Developer Mode: Toggle the switch in the top-right corner.
+- Load Extension: Click "Load unpacked" and select the folder where you cloned the project.
 
-## 📈 Roadmap & Future Improvements
+## 👨‍💻 Author
+Aryan Bhardwaj
+GitHub: @anastand
+LinkedIn:[Aryan Bhardwaj](https://www.linkedin.com/in/aryan-bhardwaj-56129422b/)
 
-Data Visualization: Integration of Chart.js for visual trend analysis.
-
-Categorization: Auto-tagging videos by category (Education, Entertainment) via the YouTube Data API.
-
-Sync Support: Optional cloud sync for cross-browser usage statistics.
-
-- 👨‍💻 Author :AryanBhardwaj
-- GitHub: @Anastand
-- LinkedIn: [AryanBhardwaj](https://www.linkedin.com/in/aryan-bhardwaj-56129422b/)
-
-> Note: This project was built to explore the constraints of Manifest V3 and the complexities of DOM manipulation in high-traffic web applications.
+Built to explore the boundaries of the Chrome Extension API and the complexities of high-traffic web applications.
+code
