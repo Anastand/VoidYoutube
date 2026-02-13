@@ -247,6 +247,13 @@ function attachListeners(videoEl) {
 			return;
 		}
 
+		// Last best-effort metadata sync before writing the session.
+		getVideoMetaData();
+		if (sessionVideoId != null && currentPageVideoId === sessionVideoId && ready) {
+			sessionVideoTitle = currentPageVideoTitle;
+			sessionCreator = currentPageCreator;
+		}
+
 		const elapsed = (new Date() - startTime) / 1000;
 
 		// Clear immediately to prevent double logs (pause + nav-start)
@@ -365,13 +372,27 @@ function attachListeners(videoEl) {
 		logwatchTime("pagehide");
 	};
 
+	const onPopState = () => {
+		logwatchTime("popstate");
+	};
+
+	const onBeforeUnload = () => {
+		logwatchTime("beforeunload");
+	};
+
 	videoEl.addEventListener("play", onPlay);
 	videoEl.addEventListener("pause", onPause);
 
 	window.addEventListener("yt-navigate-start", onNavigateStart);
 	window.addEventListener("pagehide", onPageHide);
+	window.addEventListener("popstate", onPopState);
+	window.addEventListener("beforeunload", onBeforeUnload);
 
 	return () => {
+		if (!disposed && startTime) {
+			logwatchTime("cleanup");
+		}
+
 		// Proper cleanup (detach everything this binding attached)
 		disposed = true;
 
@@ -387,5 +408,7 @@ function attachListeners(videoEl) {
 
 		window.removeEventListener("yt-navigate-start", onNavigateStart);
 		window.removeEventListener("pagehide", onPageHide);
+		window.removeEventListener("popstate", onPopState);
+		window.removeEventListener("beforeunload", onBeforeUnload);
 	};
 }

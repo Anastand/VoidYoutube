@@ -8,6 +8,19 @@ function isHomepage() {
 function getTodayDate() {
 	return new Date().toISOString().split("T")[0];
 }
+const NO_LIMIT_MODE_KEY = "noLimitModeEnabled";
+
+function applyHomeSheetPreferences() {
+	if (!document.body) return;
+
+	chrome.storage.sync.get(["homeSheetHidden", "homeSheetBlurred"], (prefs) => {
+		const hide = !!prefs.homeSheetHidden;
+		const blur = !!prefs.homeSheetBlurred;
+
+		document.body.classList.toggle("vt-home-hide", hide);
+		document.body.classList.toggle("vt-home-blur", blur);
+	});
+}
 
 const SNARK_DB = {
 	TIER_LOW: [
@@ -73,20 +86,52 @@ const SNARK_DB = {
 };
 
 // 2. UPDATER FUNCTION
-function updateDashboard(percentage, insult, limitMinutes) {
+function updateDashboard(percentage, insult, limitMinutes, noLimitMode) {
 	const timeText = document.getElementById("vt-time-text");
 	const barFill = document.getElementById("vt-bar-fill");
 	const messageText = document.getElementById("vt-message");
 	const limitDisplay = document.getElementById("vt-sync-currentLimit");
+	const modeBadge = document.getElementById("vt-mode-badge");
 
-	if (timeText) timeText.textContent = `${percentage}% WASTED`;
+	if (timeText) {
+		timeText.textContent = noLimitMode
+			? `${percentage}% LOGGED`
+			: `${percentage}% WASTED`;
+	}
 	if (barFill) barFill.style.width = `${Math.min(percentage, 100)}%`;
 	if (messageText) messageText.textContent = insult;
 	if (limitDisplay) limitDisplay.textContent = `LIMIT: ${limitMinutes}m`;
+	if (modeBadge) {
+		modeBadge.textContent = noLimitMode ? "VOID MODE: ON" : "VOID MODE: OFF";
+		modeBadge.style.background = noLimitMode ? "#ff0000" : "transparent";
+		modeBadge.style.color = noLimitMode ? "#fff" : "#ff0000";
+	}
+}
+
+function isDealersVisible() {
+	const container = document.getElementById("vt-dealers-container");
+	return !!container && container.style.display !== "none";
+}
+
+function refreshDashboardNow() {
+	const button = document.getElementById("vt-sync-btn");
+	if (button) {
+		button.textContent = "[ REFRESHING... ]";
+		button.disabled = true;
+	}
+
+	VoidtubeDashboard();
+
+	if (button) {
+		setTimeout(() => {
+			button.textContent = "[ REFRESH_STATS ]";
+			button.disabled = false;
+		}, 300);
+	}
 }
 
 // 3. CREATOR FUNCTION
-function createDashboard(percentage, insult, limitMinutes) {
+function createDashboard(percentage, insult, limitMinutes, noLimitMode) {
 	const dashboard = document.createElement("div");
 	dashboard.id = "voidtube-dashboard";
 
@@ -104,9 +149,14 @@ function createDashboard(percentage, insult, limitMinutes) {
     `;
 
 	dashboard.innerHTML = `
-        <h1 id="vt-time-text" style="font-size: 72px; color: #ff0000; margin: 0 0 10px 0; letter-spacing: -2px; font-weight: 900;">
-            ${percentage}% WASTED
-        </h1>
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:20px; margin-bottom: 10px;">
+            <h1 id="vt-time-text" style="font-size: 72px; color: #ff0000; margin: 0; letter-spacing: -2px; font-weight: 900;">
+                ${noLimitMode ? `${percentage}% LOGGED` : `${percentage}% WASTED`}
+            </h1>
+            <div id="vt-mode-badge" style="border:1px solid #ff0000; padding:8px 10px; font-size:12px; font-weight:700; color:${noLimitMode ? "#fff" : "#ff0000"}; background:${noLimitMode ? "#ff0000" : "transparent"};">
+                ${noLimitMode ? "VOID MODE: ON" : "VOID MODE: OFF"}
+            </div>
+        </div>
 
         <div style="width: 100%; height: 15px; background: #222; margin-bottom: 35px; overflow: hidden;">
             <div id="vt-bar-fill" style="width: ${Math.min(percentage, 100)}%; height: 100%; background: #ff0000; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);"></div>
@@ -159,7 +209,7 @@ function createDashboard(percentage, insult, limitMinutes) {
 
 	document
 		.getElementById("vt-sync-btn")
-		.addEventListener("click", VoidtubeDashboard);
+		.addEventListener("click", refreshDashboardNow);
 
 	document
 		.getElementById("vt-toggle-dealers")
@@ -246,16 +296,21 @@ function VoidtubeDashboard() {
 	const todayDate = getTodayDate();
 
 	chrome.storage.local.get([todayDate], (local) => {
-		chrome.storage.sync.get("dailyLimitMinutes", (sync) => {
+		chrome.storage.sync.get(["dailyLimitMinutes", NO_LIMIT_MODE_KEY], (sync) => {
 			const totalTime = local[todayDate]?.totalTimeSeconds || 0;
 			const limitMinutes = sync.dailyLimitMinutes || 30;
 			const limitSeconds = limitMinutes * 60;
+			const noLimitMode = !!sync[NO_LIMIT_MODE_KEY];
 
 			const percentage =
 				limitSeconds > 0 ? Math.round((totalTime / limitSeconds) * 100) : 0;
 
 			let tier;
-			if (percentage <= 25) tier = SNARK_DB.TIER_LOW;
+			if (noLimitMode) {
+				tier = [
+					"Void Mode active. No blocking now. Every second is still being logged.",
+				];
+			} else if (percentage <= 25) tier = SNARK_DB.TIER_LOW;
 			else if (percentage <= 50) tier = SNARK_DB.TIER_MID;
 			else if (percentage <= 75) tier = SNARK_DB.TIER_HIGH;
 			else if (percentage <= 99) tier = SNARK_DB.TIER_CRITICAL;
@@ -267,9 +322,13 @@ function VoidtubeDashboard() {
 			if (!isHomepage()) return;
 
 			if (existing) {
-				updateDashboard(percentage, insult, limitMinutes);
+				updateDashboard(percentage, insult, limitMinutes, noLimitMode);
 			} else {
-				createDashboard(percentage, insult, limitMinutes);
+				createDashboard(percentage, insult, limitMinutes, noLimitMode);
+			}
+
+			if (isDealersVisible()) {
+				renderDealersTable();
 			}
 		});
 	});
@@ -288,6 +347,8 @@ function tryInject(retryCount = 0) {
 }
 
 window.addEventListener("yt-navigate-finish", () => {
+	applyHomeSheetPreferences();
+
 	const d = document.getElementById("voidtube-dashboard");
 	if (!isHomepage()) {
 		if (d) d.remove();
@@ -296,5 +357,20 @@ window.addEventListener("yt-navigate-finish", () => {
 	}
 });
 
+chrome.storage.onChanged.addListener((changes, areaName) => {
+	if (areaName !== "sync") return;
+	if (
+		!changes.homeSheetHidden &&
+		!changes.homeSheetBlurred &&
+		!changes[NO_LIMIT_MODE_KEY]
+	)
+		return;
+	applyHomeSheetPreferences();
+	if (isHomepage()) {
+		VoidtubeDashboard();
+	}
+});
+
 // Initial load
+applyHomeSheetPreferences();
 tryInject();

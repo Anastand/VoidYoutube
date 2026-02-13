@@ -1,16 +1,170 @@
 <html>
 	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>VoidTube</title>
 	</head>
-	<body>
-		<p id="currentLimit">Current Limit: -- minutes</p>
-		<input
-			type="number"
-			id="limit-input"
-			placeholder="Enter limit in minutes"
-		/>
-		<button id="limit-button">Save Value</button>
-		<p id="status"></p>
+	<body
+		style="
+			margin: 0;
+			width: 340px;
+			min-height: 420px;
+			background: #050505;
+			color: #fff;
+			font-family: 'Courier New', monospace;
+		"
+	>
+		<div style="padding: 14px; border-top: 4px solid #ff0000">
+			<h1 style="margin: 0 0 12px 0; font-size: 20px; letter-spacing: 0.6px; color: #ff0000">
+				VOIDTUBE CONTROL
+			</h1>
+
+			<div style="border: 1px solid #2b2b2b; background: #101010; padding: 10px; margin-bottom: 10px">
+				<p id="currentLimit" style="margin: 0 0 8px 0; font-size: 12px; color: #cfcfcf">
+					Current Limit: -- minutes
+				</p>
+				<div style="display: flex; gap: 8px">
+					<input
+						type="number"
+						id="limit-input"
+						placeholder="Minutes"
+						min="1"
+						step="1"
+						style="
+							flex: 1;
+							background: #000;
+							border: 1px solid #ff0000;
+							color: #fff;
+							padding: 8px;
+							font-family: 'Courier New', monospace;
+						"
+					/>
+					<button
+						id="limit-button"
+						style="
+							background: #ff0000;
+							border: 1px solid #ff0000;
+							color: #fff;
+							padding: 8px 10px;
+							font-family: 'Courier New', monospace;
+							font-weight: 700;
+							cursor: pointer;
+						"
+					>
+						SET
+					</button>
+				</div>
+			</div>
+
+				<div style="border: 1px solid #2b2b2b; background: #101010; padding: 10px; margin-bottom: 10px">
+					<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px">
+						<span style="font-size: 12px; color: #cfcfcf">Home Sheet Blocker</span>
+					<button
+						id="toggle-home-sheet"
+						style="
+							min-width: 68px;
+							background: transparent;
+							border: 1px solid #ff0000;
+							color: #ff0000;
+							padding: 8px 10px;
+							font-family: 'Courier New', monospace;
+							font-weight: 700;
+							cursor: pointer;
+						"
+					>
+						--
+					</button>
+				</div>
+				<div style="display: flex; align-items: center; justify-content: space-between">
+					<span style="font-size: 12px; color: #cfcfcf">Blur Home</span>
+					<button
+						id="toggle-home-blur"
+						style="
+							min-width: 68px;
+							background: transparent;
+							border: 1px solid #ff0000;
+							color: #ff0000;
+							padding: 8px 10px;
+							font-family: 'Courier New', monospace;
+							font-weight: 700;
+							cursor: pointer;
+						"
+					>
+						--
+					</button>
+					</div>
+				</div>
+
+				<div style="border: 1px solid #2b2b2b; background: #101010; padding: 10px; margin-bottom: 10px">
+					<p style="margin: 0 0 8px 0; font-size: 12px; color: #cfcfcf">VOID MODE</p>
+					<button
+						id="toggle-no-limit-mode"
+						style="
+							width: 100%;
+							background: transparent;
+							border: 1px solid #ff0000;
+							color: #ff0000;
+							padding: 8px 10px;
+							font-family: 'Courier New', monospace;
+							font-weight: 700;
+							cursor: pointer;
+						"
+					>
+						VOID MODE: OFF
+					</button>
+					<p style="margin: 8px 0 0; font-size: 11px; color: #888">
+						No blocking. Everything is still logged.
+					</p>
+				</div>
+
+				<div style="border: 1px solid #2b2b2b; background: #101010; padding: 10px; margin-bottom: 10px">
+					<button
+						id="export-today-button"
+					style="
+						width: 100%;
+						background: transparent;
+						border: 1px solid #ff0000;
+						color: #ff0000;
+						padding: 8px 10px;
+						font-family: 'Courier New', monospace;
+						font-weight: 700;
+						cursor: pointer;
+						margin-bottom: 8px;
+					"
+				>
+					EXPORT TODAY (COPY MD)
+				</button>
+
+				<button
+					id="export-button"
+					style="
+						width: 100%;
+						background: #ff0000;
+						border: 1px solid #ff0000;
+						color: #fff;
+						padding: 8px 10px;
+						font-family: 'Courier New', monospace;
+						font-weight: 700;
+						cursor: pointer;
+					"
+				>
+					SHOW ALL EXPORT KEYS
+				</button>
+				<div id="exports-section" style="display: none; margin-top: 10px; border-top: 1px solid #2b2b2b; padding-top: 8px">
+					<p id="exports-status" style="margin: 0; font-size: 12px; color: #cfcfcf">No exports loaded.</p>
+					<div
+						id="exports-list"
+						style="
+							margin: 8px 0 0;
+							max-height: 160px;
+							overflow: auto;
+						"
+					></div>
+				</div>
+			</div>
+
+			<p id="status" style="min-height: 16px; margin: 4px 0 0; font-size: 11px; color: #ff6b6b"></p>
+		</div>
 		<script src="popup.js"></script>
 	</body>
 </html>

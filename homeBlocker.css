@@ -1,4 +1,9 @@
-ytd-rich-grid-renderer {
-	/*display: none !important;*/
-	/*filter: blur(1px);*/
+body.vt-home-hide ytd-rich-grid-renderer {
+	display: none !important;
+}
+
+body.vt-home-blur ytd-rich-grid-renderer {
+	filter: blur(8px) !important;
+	pointer-events: none !important;
+	user-select: none !important;
 }

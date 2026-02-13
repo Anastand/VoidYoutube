@@ -1,55 +1,67 @@
-# VoidTube Roadmap (Code-Aligned)
+# VoidTube (Code-Aligned README)
 
-This README reflects the current state of the code in:
+Manifest V3 Chrome extension for tracking YouTube watch behavior, enforcing a daily limit (optional), and exporting structured daily/weekly data.
+
+## Implemented Features
+- Daily logging in `chrome.storage.local` keyed by UTC date (`YYYY-MM-DD`).
+- Limit config in `chrome.storage.sync` (`dailyLimitMinutes`, default `30`).
+- Real-time limit checks from content script to background worker.
+- Session close coverage on:
+  - `pause`
+  - `yt-navigate-start`
+  - `pagehide`
+  - `popstate`
+  - `beforeunload`
+- Filtering of noisy sessions:
+  - ignore sessions shorter than `2s`
+  - ignore placeholder metadata rows (`Not-Recorded`)
+- Homepage controls:
+  - Home Sheet Blocker (hide feed)
+  - Blur Home (blur feed + disable interaction)
+- Dashboard on YouTube home:
+  - percentage bar
+  - usage message
+  - dealer table (top creators by time)
+  - refresh button
+  - mode badge (`VOID MODE: ON/OFF`)
+- Popup controls:
+  - set daily limit
+  - toggle Home Sheet Blocker
+  - toggle Blur Home
+  - toggle Void Mode (no blocking, keep logging)
+  - export today as markdown copy
+  - list all export keys and copy markdown per key
+- Retention/export pipeline in background:
+  - raw day data retained for 5 days
+  - old days rolled into weekly export keys (`weeklyExport:<start>_to_<end>`)
+  - merged updates prevent weekly export overwrite
+
+## Data Model
+- Daily key (`YYYY-MM-DD`):
+  - `date`
+  - `totalTimeSeconds`
+  - `session[]` with `{ videoTitle, creator, watchTime, videoUrl }`
+- Weekly key (`weeklyExport:YYYY-MM-DD_to_YYYY-MM-DD`):
+  - `type`
+  - `startDate`, `endDate`
+  - `createdAt`, `updatedAt`
+  - `sourceDates[]`
+  - `totalTimeSeconds`, `totalSessions`
+  - `dailyRecords[]`
+
+## Known Gaps
+- Multi-tab concurrency can still lose increments because writes are read-modify-write without a lock.
+- UTC day boundaries may not match local-day expectations.
+- Cross-midnight sessions are attributed to the day at log time.
+- No automated test suite yet for lifecycle and storage race paths.
+
+## Project Files
 - `manifest.json`
-- `background.js`
 - `content-script.js`
+- `background.js`
 - `dashboard.js`
+- `analytics.js`
 - `popup.html`
 - `popup.js`
 - `homeBlocker.css`
-
-## Current Build Snapshot
-- Chrome Extension using Manifest V3.
-- Watch-time logging in `chrome.storage.local` by date key (`YYYY-MM-DD`).
-- Configurable daily limit stored in `chrome.storage.sync`.
-- Block checks via message passing (`check-block-status`).
-- Real-time polling while video is playing (10s interval).
-- Homepage dashboard injection with percentage bar and snark message.
-- Popup UI for setting the limit.
-
-## Phase 1: Core MVP
-- [x] Daily time tracking by day key in local storage
-- [x] Configurable limit via popup
-- [x] Real-time polling enforcement while playing
-- [x] Dynamic limit update without page refresh (dashboard + polling behavior)
-- [ ] Homepage CSS nuke (currently commented out in `homeBlocker.css`)
-- [ ] fix the navigation logic
-
-## Phase 2: Dashboard & Analytics
-- [x] Homepage overlay/dashboard injected on YouTube home
-- [x] Percentage of limit used (progress bar)
-- [x] Snarky status messages based on usage tiers
-- [x] Explicit "Time Spent Today" counter (minutes/seconds value not shown directly)
-- [x] Creator/channel statistics (top channels by time)
-
-## Phase 3: AI Integration
-- [ ] Different limits for different content types
-- [ ] CSV export of day
-
-## Phase 4: Network Hardening
-- [ ] Session mode (unlock for X minutes, then lock for Y minutes)
-
-## Known Gaps In Current Code
-- [ ] Multi-tab race condition: per-tab checks can miss combined concurrent watch time.
-- [ ] Cross-midnight logging: active session is fully attributed to date at pause/log time.
-- [ ] Input validation: popup accepts invalid values (`NaN`, negative, zero edge cases).
-- [ ] Inconsistent default limit: background defaults to `40`, popup/dashboard imply `30`.
-- [ ] Session-finalization gaps: watch time is mainly logged on `pause`, so abrupt tab close/navigation can miss time.
-
-## Notes
-- Additional working notes are in `readme/`:
-- `background.md`
-- `content-script.md`
-- `idea.md`
-- `reply.md`
+- `changes.md`
