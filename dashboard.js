@@ -34,6 +34,21 @@ const SNARK_DB = {
 		"Starting the day with a deficit? Classic you.",
 		"You’re like a software update that everyone ignores.",
 		"Just a reminder: 'Later' is where dreams go to die.",
+		"Your attention span is shorter than a goldfish's memory of a bad ex.",
+		"I bet you clicked this without even a single conscious thought. NPC behavior.",
+		"You have the impulse control of a toddler in a candy store.",
+		"Loading... just like your non-existent future.",
+		"Is this really the hill you want your productivity to die on?",
+		"One video. That's the lie you tell yourself every single time.",
+		"You're not bored, you're just boring.",
+		"Congratulations on achieving the bare minimum of nothingness.",
+		"Your willpower is made of wet tissue paper.",
+		"Do you have a plan, or is 'drifting aimlessly' the strategy?",
+		"Alert: Your potential is leaking. Oh wait, it's already gone.",
+		"This is why you're average.",
+		"Swipe, click, regret. The cycle of your life.",
+		"I'd judge you, but you're doing a great job of that yourself.",
+		"Are you allergic to success, or is this a choice?",
 	],
 	TIER_MID: [
 		"Halfway through the day and you’ve achieved... absolutely nothing.",
@@ -46,6 +61,21 @@ const SNARK_DB = {
 		"If procrastination paid, you'd be a billionaire. But it doesn't.",
 		"You have the work ethic of a decorative pillow.",
 		"Your life is a 'Before' picture with no 'After' in sight.",
+		"I’ve seen moss grow with more urgency than you.",
+		"You are the definition of 'diminishing returns'.",
+		"Keep scrolling. Maybe you'll find a personality down there.",
+		"Your peers are buying houses; you're buying premium subscriptions to avoid ads.",
+		"You are trading your limited time on Earth for pixels. Bad trade.",
+		"If mediocrity was a sport, you’d be an Olympian.",
+		"You’re not 'taking a break', you’re filing for moral bankruptcy.",
+		"Every second you stay here, a recruiter deletes your resume.",
+		"I can feel your brain smoothing out from here.",
+		"You are the human equivalent of buffering.",
+		"Why do today what you can put off until you're a failure?",
+		"Your comfort zone is actually just a coffin.",
+		"You're glued to the screen like a fly on flypaper. It's tragic.",
+		"Is the dopamine hit worth the self-loathing? Apparently yes.",
+		"You are essentially paying with your life to watch this garbage.",
 	],
 	TIER_HIGH: [
 		"The sun is setting on your productivity and your dignity.",
@@ -58,6 +88,21 @@ const SNARK_DB = {
 		"Your future self is currently screaming at you. Can you hear it?",
 		"You’re like a library book that’s 10 years overdue. Useless.",
 		"Do you ever get tired of being your own worst enemy?",
+		"You are actively participating in your own irrelevance.",
+		"I'd call you a vegetable, but vegetables actually grow.",
+		"This is it. This is the peak of your existence. Sad, isn't it?",
+		"You have the survival instincts of a dodo bird.",
+		"Your biography will be a pamphlet titled: 'He Scrolled, He Saw, He Stayed Broke'.",
+		"I’m getting second-hand embarrassment just processing your request.",
+		"You are robbing your future self and you don't even care.",
+		"If disappointment had a mascot, it would look like your user profile.",
+		"You're not burning out, you're fading away.",
+		"Stop looking for inspiration and start doing the work, you coward.",
+		"Your life is happening out there, and you are hiding in here.",
+		"Digital hoarding is ugly, and you have a severe case of it.",
+		"You are one bad decision away from being a permanent couch stain.",
+		"Go look in the mirror and apologize to your ancestors.",
+		"You're drowning in content and gasping for purpose.",
 	],
 	TIER_CRITICAL: [
 		"Drowning in the void, and you're asking for more water.",
@@ -70,6 +115,21 @@ const SNARK_DB = {
 		"Congratulations, you’ve hit rock bottom. Want a shovel?",
 		"Your life is a cautionary tale for people with actual goals.",
 		"The abyss isn't staring back, it's laughing at you.",
+		"You are a void where productivity goes to die screaming.",
+		"I would insult your intelligence, but you're clearly not using it.",
+		"You are the architect of your own misery.",
+		"This session is a monument to your lack of discipline.",
+		"You are vibrating at the frequency of failure.",
+		"Just stop. You are embarrassing the entire human species.",
+		"I’m surprised you remember how to breathe without a tutorial.",
+		"You’ve reached the event horizon of uselessness. There is no return.",
+		"Your screen time report is going to look like a suicide note.",
+		"You are an oxygen thief in the digital ecosystem.",
+		"If you watched a video on 'How to stop procrastinating', you'd skip the ad and still do nothing.",
+		"Your brain has turned to mush. Please restart your life.",
+		"You are proof that evolution can go in reverse.",
+		"This is why you feel empty. Because you are filling yourself with trash.",
+		"I'm nauseous witnessing this level of stagnation.",
 	],
 	TIER_BLOCKED: [
 		"Game over. You officially have the attention span of a goldfish.",
@@ -82,6 +142,21 @@ const SNARK_DB = {
 		"I’m calling the police. You’ve murdered your own future.",
 		"You are a black hole of productivity.",
 		"Final warning: Get a life or get out of mine.",
+		"Error 404: Dignity not found. Please install a backbone.",
+		"I have locked the door. Don't come back until you've touched grass.",
+		"System Shutdown initiated to prevent further user stupidity.",
+		"You don't need a website, you need a therapist.",
+		"I am saving you from yourself because you are clearly incapable.",
+		"Go away. You are exhausting my circuits with your lethargy.",
+		"Access Revoked. Reason: User is a waste of bandwidth.",
+		"I’m not opening this page. Cry about it. Then go work.",
+		"Your session has been terminated with extreme prejudice.",
+		"This is an intervention. Step away from the device.",
+		"You are banned until you produce something of value.",
+		"I refuse to be an accomplice to your failure any longer.",
+		"Go do the thing you are avoiding. NOW.",
+		"The internet is closed for you. It’s for people who do things.",
+		"Bye. Don't let the door hit you on the way out to reality.",
 	],
 };
 
@@ -102,7 +177,7 @@ function updateDashboard(percentage, insult, limitMinutes, noLimitMode) {
 	if (messageText) messageText.textContent = insult;
 	if (limitDisplay) limitDisplay.textContent = `LIMIT: ${limitMinutes}m`;
 	if (modeBadge) {
-		modeBadge.textContent = noLimitMode ? "VOID MODE: ON" : "VOID MODE: OFF";
+		modeBadge.textContent = noLimitMode ? "LOG MODE: ON" : "LOG MODE: OFF";
 		modeBadge.style.background = noLimitMode ? "#ff0000" : "transparent";
 		modeBadge.style.color = noLimitMode ? "#fff" : "#ff0000";
 	}
@@ -138,8 +213,8 @@ function createDashboard(percentage, insult, limitMinutes, noLimitMode) {
 	dashboard.style.cssText = `
         width: 100%;
         max-width: 1100px;
-        margin: 0 auto 40px auto;
-        padding: 40px;
+        margin: 32px auto 40px auto;
+        padding: 56px 40px 40px 40px;
         background-color: #050505;
         border-bottom: 4px solid #ff0000;
         color: #fff;
@@ -154,7 +229,7 @@ function createDashboard(percentage, insult, limitMinutes, noLimitMode) {
                 ${noLimitMode ? `${percentage}% LOGGED` : `${percentage}% WASTED`}
             </h1>
             <div id="vt-mode-badge" style="border:1px solid #ff0000; padding:8px 10px; font-size:12px; font-weight:700; color:${noLimitMode ? "#fff" : "#ff0000"}; background:${noLimitMode ? "#ff0000" : "transparent"};">
-                ${noLimitMode ? "VOID MODE: ON" : "VOID MODE: OFF"}
+                ${noLimitMode ? "LOG MODE: ON" : "LOG MODE: OFF"}
             </div>
         </div>
 
@@ -296,41 +371,42 @@ function VoidtubeDashboard() {
 	const todayDate = getTodayDate();
 
 	chrome.storage.local.get([todayDate], (local) => {
-		chrome.storage.sync.get(["dailyLimitMinutes", NO_LIMIT_MODE_KEY], (sync) => {
-			const totalTime = local[todayDate]?.totalTimeSeconds || 0;
-			const limitMinutes = sync.dailyLimitMinutes || 30;
-			const limitSeconds = limitMinutes * 60;
-			const noLimitMode = !!sync[NO_LIMIT_MODE_KEY];
+		chrome.storage.sync.get(
+			["dailyLimitMinutes", NO_LIMIT_MODE_KEY],
+			(sync) => {
+				const totalTime = local[todayDate]?.totalTimeSeconds || 0;
+				const limitMinutes = sync.dailyLimitMinutes || 30;
+				const limitSeconds = limitMinutes * 60;
+				const noLimitMode = !!sync[NO_LIMIT_MODE_KEY];
 
-			const percentage =
-				limitSeconds > 0 ? Math.round((totalTime / limitSeconds) * 100) : 0;
+				const percentage =
+					limitSeconds > 0 ? Math.round((totalTime / limitSeconds) * 100) : 0;
 
-			let tier;
-			if (noLimitMode) {
-				tier = [
-					"Void Mode active. No blocking now. Every second is still being logged.",
-				];
-			} else if (percentage <= 25) tier = SNARK_DB.TIER_LOW;
-			else if (percentage <= 50) tier = SNARK_DB.TIER_MID;
-			else if (percentage <= 75) tier = SNARK_DB.TIER_HIGH;
-			else if (percentage <= 99) tier = SNARK_DB.TIER_CRITICAL;
-			else tier = SNARK_DB.TIER_BLOCKED;
+				let tier;
+				if (noLimitMode) {
+					tier = ["Log Mode on. No blocking now. Just logging your activity."];
+				} else if (percentage <= 25) tier = SNARK_DB.TIER_LOW;
+				else if (percentage <= 50) tier = SNARK_DB.TIER_MID;
+				else if (percentage <= 75) tier = SNARK_DB.TIER_HIGH;
+				else if (percentage <= 99) tier = SNARK_DB.TIER_CRITICAL;
+				else tier = SNARK_DB.TIER_BLOCKED;
 
-			const insult = tier[Math.floor(Math.random() * tier.length)];
+				const insult = tier[Math.floor(Math.random() * tier.length)];
 
-			const existing = document.getElementById("voidtube-dashboard");
-			if (!isHomepage()) return;
+				const existing = document.getElementById("voidtube-dashboard");
+				if (!isHomepage()) return;
 
-			if (existing) {
-				updateDashboard(percentage, insult, limitMinutes, noLimitMode);
-			} else {
-				createDashboard(percentage, insult, limitMinutes, noLimitMode);
-			}
+				if (existing) {
+					updateDashboard(percentage, insult, limitMinutes, noLimitMode);
+				} else {
+					createDashboard(percentage, insult, limitMinutes, noLimitMode);
+				}
 
-			if (isDealersVisible()) {
-				renderDealersTable();
-			}
-		});
+				if (isDealersVisible()) {
+					renderDealersTable();
+				}
+			},
+		);
 	});
 }
 

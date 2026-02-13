@@ -219,7 +219,7 @@ Prevents confusing output such as `0m` for short watch spans.
 2. Day-key partitioning currently uses UTC date boundaries.
 3. Automated tests are not yet implemented for lifecycle and concurrency paths.
 
-## 13) Void Mode (No-Limit Logging Mode)
+## 13) Log Mode (No-Limit Logging Mode)
 
 ### What was requested
 You wanted a mode where YouTube is never blocked, but all watch behavior is still recorded.
@@ -227,7 +227,7 @@ You wanted a mode where YouTube is never blocked, but all watch behavior is stil
 ### What was changed
 In `/Users/aryanbhardwaj/Development/VoidYoutube/popup.html` and `/Users/aryanbhardwaj/Development/VoidYoutube/popup.js`:
 
-1. Added a new popup control button: `VOID MODE: ON/OFF`.
+1. Added a new popup control button (`LOG MODE: ON/OFF`; initially implemented as `VOID MODE` and later renamed in UI copy).
 2. Added storage key: `noLimitModeEnabled` in `chrome.storage.sync`.
 3. Added clear status feedback when mode changes.
 
@@ -239,7 +239,7 @@ In `/Users/aryanbhardwaj/Development/VoidYoutube/background.js`:
 
 In `/Users/aryanbhardwaj/Development/VoidYoutube/dashboard.js`:
 
-1. Added `VOID MODE` badge in dashboard.
+1. Added `LOG MODE` badge in dashboard (renamed from `VOID MODE` in UI copy).
 2. Dashboard reacts to mode toggles via `chrome.storage.onChanged`.
 3. Header label switches from `% WASTED` to `% LOGGED` when mode is enabled.
 

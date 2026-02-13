@@ -260,7 +260,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	function renderVoidModeButton(isOn) {
 		if (!noLimitModeButton) return;
-		noLimitModeButton.textContent = `VOID MODE: ${isOn ? "ON" : "OFF"}`;
+		noLimitModeButton.textContent = `LOG MODE: ${isOn ? "ON" : "OFF"}`;
 		if (isOn) {
 			noLimitModeButton.style.background = "#ff0000";
 			noLimitModeButton.style.color = "#fff";
@@ -423,8 +423,8 @@ document.addEventListener("DOMContentLoaded", () => {
 					renderVoidModeButton(nextValue);
 					setStatus(
 						nextValue
-							? "VOID MODE ON: No blocking, full logging active."
-							: "VOID MODE OFF: Limit enforcement restored.",
+							? "LOG MODE ON: Now just logging your activity."
+							: "LOG MODE OFF: Void mode deactivated, enforcement is active.",
 					);
 				});
 			});
