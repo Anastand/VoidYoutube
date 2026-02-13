@@ -17,9 +17,9 @@
 
 ## Visual Gallery
 
-| Dashboard (In-Page Injection) | Void Mode (Feed Blur) | Statistics Popup |
+| Dashboard (In-Page Injection) | Void Mode (Feed Blur) | Popup |
 | :---: | :---: | :---: |
-| <img src="https://github.com/user-attachments/assets/a14e4cde-84f3-4025-9aba-680071e16c95" width="280" alt="Dashboard" /> | <img src="https://github.com/user-attachments/assets/ea30cf7c-62ba-4693-89fc-a2fa29ba66ad" width="280" alt="Void Mode" /> | <img src="https://github.com/user-attachments/assets/717a784d-e565-4f42-9d41-7fe8a4aef665" width="280" alt="Popup" /> |
+| <img src="https://lqjxvo6uxw.ufs.sh/f/sDONeWpE8ncq5kiIFos6ouykDtZrmK8CF3bhgAqn4jMv0L5i" width="280" alt="Dashboard" /> | <img src="https://lqjxvo6uxw.ufs.sh/f/sDONeWpE8ncqviik1BgEmkeAUxXInMfKTWpl0zuibSRBO3yY" width="280" alt="Void Mode" /> | <img src="https://lqjxvo6uxw.ufs.sh/f/sDONeWpE8ncq19OwKRIbgpzZ4L09m2yXIw7djAYUecT5MOQS" width="280" alt="Popup" /> |
 
 ---
 
