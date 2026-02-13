@@ -165,7 +165,6 @@ chrome.runtime.onStartup.addListener(() => {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	maybeRunMaintenance();
-	console.log("message received in background.js", message);
 
 	// Get the current date in YYYY-MM-DD format to use as a key for daily storage
 	let todayDate = getTodayDateUtc();
@@ -184,9 +183,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			limit = (data.dailyLimitMinutes || 30) * 60;
 
 			chrome.storage.local.get([todayDate], (result) => {
-				console.log(result);
 				let exist = result[todayDate];
-				console.log(exist);
 
 				// If no record exists for today, YouTube should not be blocked
 				if (!result || !exist) {
@@ -233,8 +230,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			const noLimitMode = !!data[NO_LIMIT_MODE_KEY];
 			chrome.storage.local.get([todayDate], (result) => {
 				let exist = result[todayDate];
-				console.log(result);
-				console.log(exist);
 
 				if (!result || !exist) {
 					// Initialize a new entry if this is the first log of the day

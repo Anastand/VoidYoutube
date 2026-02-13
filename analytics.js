@@ -1,5 +1,4 @@
 // analytics.js
-console.log("=== analytics.js LOADED ===");
 
 /**
  * sessions input example:

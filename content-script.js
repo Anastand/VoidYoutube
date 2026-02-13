@@ -103,9 +103,6 @@ function ensureVideoBound(retryCount = 0) {
 
 	boundVideoEl = videoEl;
 
-	// NOTE: You can remove this log later
-	console.log("Bound to new video element for:", location.href);
-
 	cleanup = attachListeners(videoEl);
 }
 
@@ -130,8 +127,6 @@ window.addEventListener("yt-navigate-finish", () => {
 
 		const state = getYoutubeState();
 		if (state?.ready) {
-			// NOTE: You can remove this log later
-			console.log("Navigation Complete! New Data:", state);
 			return;
 		}
 
@@ -242,8 +237,6 @@ function attachListeners(videoEl) {
 		if (disposed) return;
 
 		if (!startTime) {
-			// NOTE: You can remove this log later
-			// console.log("logwatchTime ignored (no active startTime).", reason);
 			return;
 		}
 
@@ -347,15 +340,10 @@ function attachListeners(videoEl) {
 	});
 
 	const onPlay = () => {
-		// NOTE: You can remove this log later
-		console.log("PLAY EVENT FIRED");
 		startSessionIfAllowed();
 	};
 
 	const onPause = () => {
-		// NOTE: You can remove this log later
-		console.log("PAUSE EVENT FIRED");
-
 		if (ignoreNextPause) {
 			ignoreNextPause = false;
 			return;
