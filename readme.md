@@ -1,4 +1,4 @@
-# 🌌 VoidTube: YouTube Productivity & Analytics Engine
+# VoidTube: YouTube Productivity & Analytics Engine
 
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/Anastand/VoidYoutube?color=blueviolet)](https://github.com/Anastand/VoidYoutube/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -7,7 +7,7 @@
 
 ---
 
-## 📺 Demo
+## Demo
 
 | 🎥 Full Video Walkthrough |
 | :---: |
@@ -15,7 +15,7 @@
 
 ---
 
-## 🖼️ Visual Gallery
+## Visual Gallery
 
 | Dashboard (In-Page Injection) | Void Mode (Feed Blur) | Statistics Popup |
 | :---: | :---: | :---: |
@@ -23,7 +23,7 @@
 
 ---
 
-## 🚀 Engineering Highlights
+## Engineering Highlights
 
 This project demonstrates proficiency in browser environments and modern JavaScript:
 
@@ -34,7 +34,7 @@ This project demonstrates proficiency in browser environments and modern JavaScr
 
 ---
 
-## ✨ Key Features
+## Key Features
 
 - **⏱️ Precision Tracking:** Accurate logging of daily and weekly watch time per creator.
 - **📊 Creator Breakdown:** Automatically identifies "Top Creators" to help users audit their information diet.
@@ -44,7 +44,7 @@ This project demonstrates proficiency in browser environments and modern JavaScr
 
 ---
 
-## 🛠️ Technical Stack
+## Technical Stack
 
 - **Language:** JavaScript (ES6+)
 - **API:** Web Extensions API (Manifest V3)
@@ -53,7 +53,7 @@ This project demonstrates proficiency in browser environments and modern JavaScr
 
 ---
 
-## 🏗️ Installation (Development Mode)
+## Installation (Development Mode)
 
 1. **Clone the repository:**
    ```bash
@@ -63,10 +63,10 @@ This project demonstrates proficiency in browser environments and modern JavaScr
 - Enable Developer Mode: Toggle the switch in the top-right corner.
 - Load Extension: Click "Load unpacked" and select the folder where you cloned the project.
 
-## 👨‍💻 Author
-Aryan Bhardwaj
-GitHub: @anastand
-LinkedIn:[Aryan Bhardwaj](https://www.linkedin.com/in/aryan-bhardwaj-56129422b/)
+## Author
+- Aryan Bhardwaj
+- GitHub: @anastand
+- LinkedIn:[Aryan Bhardwaj](https://www.linkedin.com/in/aryan-bhardwaj-56129422b/)
 
 Built to explore the boundaries of the Chrome Extension API and the complexities of high-traffic web applications.
 code
