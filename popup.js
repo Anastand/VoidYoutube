@@ -241,7 +241,10 @@ document.addEventListener("DOMContentLoaded", () => {
 			return;
 		}
 		if (tone === "info") {
-			status.style.color = "#cfcfcf";
+			status.style.color =
+				getComputedStyle(document.documentElement)
+					.getPropertyValue("--vt-muted")
+					.trim() || "#cfcfcf";
 			return;
 		}
 		status.style.color = "#7dff7d";
@@ -250,11 +253,11 @@ document.addEventListener("DOMContentLoaded", () => {
 	function renderToggleButton(button, isOn) {
 		button.textContent = isOn ? "ON" : "OFF";
 		if (isOn) {
-			button.style.background = "#ff0000";
-			button.style.color = "#fff";
+			button.style.background = "var(--vt-accent)";
+			button.style.color = "var(--vt-accent-contrast)";
 		} else {
 			button.style.background = "transparent";
-			button.style.color = "#ff0000";
+			button.style.color = "var(--vt-accent)";
 		}
 	}
 
@@ -262,11 +265,11 @@ document.addEventListener("DOMContentLoaded", () => {
 		if (!noLimitModeButton) return;
 		noLimitModeButton.textContent = `LOG MODE: ${isOn ? "ON" : "OFF"}`;
 		if (isOn) {
-			noLimitModeButton.style.background = "#ff0000";
-			noLimitModeButton.style.color = "#fff";
+			noLimitModeButton.style.background = "var(--vt-accent)";
+			noLimitModeButton.style.color = "var(--vt-accent-contrast)";
 		} else {
 			noLimitModeButton.style.background = "transparent";
-			noLimitModeButton.style.color = "#ff0000";
+			noLimitModeButton.style.color = "var(--vt-accent)";
 		}
 	}
 
@@ -296,22 +299,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	function buildExportCard(key, allData, limitMinutes) {
 		const card = document.createElement("div");
-		card.style.border = "1px solid #1c1c1c";
+		card.style.border = "1px solid var(--vt-card-border)";
 		card.style.padding = "8px";
 		card.style.marginBottom = "8px";
-		card.style.background = "#0d0d0d";
+		card.style.background = "var(--vt-card-bg)";
 
 		const title = document.createElement("div");
 		title.textContent = key;
 		title.style.fontSize = "11px";
-		title.style.color = "#ddd";
+		title.style.color = "var(--vt-text)";
 		title.style.wordBreak = "break-all";
 		title.style.marginBottom = "6px";
 		card.appendChild(title);
 
 		const meta = document.createElement("div");
 		meta.style.fontSize = "10px";
-		meta.style.color = "#999";
+		meta.style.color = "var(--vt-soft)";
 		meta.style.marginBottom = "6px";
 		if (isDayKey(key)) {
 			const rec = allData[key] || {};
@@ -329,8 +332,8 @@ document.addEventListener("DOMContentLoaded", () => {
 		const button = document.createElement("button");
 		button.textContent = "COPY MARKDOWN";
 		button.style.background = "transparent";
-		button.style.border = "1px solid #ff0000";
-		button.style.color = "#ff0000";
+		button.style.border = "1px solid var(--vt-accent)";
+		button.style.color = "var(--vt-accent)";
 		button.style.padding = "6px 8px";
 		button.style.fontSize = "10px";
 		button.style.fontFamily = "'Courier New', monospace";

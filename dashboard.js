@@ -9,6 +9,55 @@ function getTodayDate() {
 	return new Date().toISOString().split("T")[0];
 }
 const NO_LIMIT_MODE_KEY = "noLimitModeEnabled";
+const SYSTEM_THEME_QUERY = window.matchMedia("(prefers-color-scheme: dark)");
+
+function getDashboardTheme() {
+	if (SYSTEM_THEME_QUERY.matches) {
+		return {
+			bg: "#050505",
+			text: "#ffffff",
+			muted: "#aaaaaa",
+			accent: "#ff0000",
+			accentContrast: "#ffffff",
+			track: "#222222",
+			panelSoft: "#111111",
+			borderStrong: "#333333",
+			inputBg: "#000000",
+			rowBorder: "#222222",
+			empty: "#666666",
+		};
+	}
+
+	return {
+		bg: "#f4f5f7",
+		text: "#171717",
+		muted: "#52525b",
+		accent: "#cc0000",
+		accentContrast: "#ffffff",
+		track: "#e4e4e7",
+		panelSoft: "#ffffff",
+		borderStrong: "#d4d4d8",
+		inputBg: "#ffffff",
+		rowBorder: "#e4e4e7",
+		empty: "#71717a",
+	};
+}
+
+function applyDashboardThemeVars(dashboard) {
+	if (!dashboard) return;
+	const theme = getDashboardTheme();
+	dashboard.style.setProperty("--vt-bg", theme.bg);
+	dashboard.style.setProperty("--vt-text", theme.text);
+	dashboard.style.setProperty("--vt-muted", theme.muted);
+	dashboard.style.setProperty("--vt-accent", theme.accent);
+	dashboard.style.setProperty("--vt-accent-contrast", theme.accentContrast);
+	dashboard.style.setProperty("--vt-track", theme.track);
+	dashboard.style.setProperty("--vt-panel-soft", theme.panelSoft);
+	dashboard.style.setProperty("--vt-border-strong", theme.borderStrong);
+	dashboard.style.setProperty("--vt-input-bg", theme.inputBg);
+	dashboard.style.setProperty("--vt-row-border", theme.rowBorder);
+	dashboard.style.setProperty("--vt-empty", theme.empty);
+}
 
 function applyHomeSheetPreferences() {
 	if (!document.body) return;
@@ -162,6 +211,8 @@ const SNARK_DB = {
 
 // 2. UPDATER FUNCTION
 function updateDashboard(percentage, insult, limitMinutes, noLimitMode) {
+	const dashboard = document.getElementById("voidtube-dashboard");
+	applyDashboardThemeVars(dashboard);
 	const timeText = document.getElementById("vt-time-text");
 	const barFill = document.getElementById("vt-bar-fill");
 	const messageText = document.getElementById("vt-message");
@@ -178,8 +229,10 @@ function updateDashboard(percentage, insult, limitMinutes, noLimitMode) {
 	if (limitDisplay) limitDisplay.textContent = `LIMIT: ${limitMinutes}m`;
 	if (modeBadge) {
 		modeBadge.textContent = noLimitMode ? "LOG MODE: ON" : "LOG MODE: OFF";
-		modeBadge.style.background = noLimitMode ? "#ff0000" : "transparent";
-		modeBadge.style.color = noLimitMode ? "#fff" : "#ff0000";
+		modeBadge.style.background = noLimitMode ? "var(--vt-accent)" : "transparent";
+		modeBadge.style.color = noLimitMode
+			? "var(--vt-accent-contrast)"
+			: "var(--vt-accent)";
 	}
 }
 
@@ -211,51 +264,63 @@ function createDashboard(percentage, insult, limitMinutes, noLimitMode) {
 	dashboard.id = "voidtube-dashboard";
 
 	dashboard.style.cssText = `
+        --vt-bg: #050505;
+        --vt-text: #ffffff;
+        --vt-muted: #aaaaaa;
+        --vt-accent: #ff0000;
+        --vt-accent-contrast: #ffffff;
+        --vt-track: #222222;
+        --vt-panel-soft: #111111;
+        --vt-border-strong: #333333;
+        --vt-input-bg: #000000;
+        --vt-row-border: #222222;
+        --vt-empty: #666666;
         width: 100%;
         max-width: 1100px;
         margin: 32px auto 40px auto;
         padding: 56px 40px 40px 40px;
-        background-color: #050505;
-        border-bottom: 4px solid #ff0000;
-        color: #fff;
+        background-color: var(--vt-bg);
+        border-bottom: 4px solid var(--vt-accent);
+        color: var(--vt-text);
         font-family: 'Courier New', monospace;
         box-sizing: border-box;
         text-align: left;
     `;
+	applyDashboardThemeVars(dashboard);
 
 	dashboard.innerHTML = `
         <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:20px; margin-bottom: 10px;">
-            <h1 id="vt-time-text" style="font-size: 72px; color: #ff0000; margin: 0; letter-spacing: -2px; font-weight: 900;">
+            <h1 id="vt-time-text" style="font-size: 72px; color: var(--vt-accent); margin: 0; letter-spacing: -2px; font-weight: 900;">
                 ${noLimitMode ? `${percentage}% LOGGED` : `${percentage}% WASTED`}
             </h1>
-            <div id="vt-mode-badge" style="border:1px solid #ff0000; padding:8px 10px; font-size:12px; font-weight:700; color:${noLimitMode ? "#fff" : "#ff0000"}; background:${noLimitMode ? "#ff0000" : "transparent"};">
+            <div id="vt-mode-badge" style="border:1px solid var(--vt-accent); padding:8px 10px; font-size:12px; font-weight:700; color:${noLimitMode ? "var(--vt-accent-contrast)" : "var(--vt-accent)"}; background:${noLimitMode ? "var(--vt-accent)" : "transparent"};">
                 ${noLimitMode ? "LOG MODE: ON" : "LOG MODE: OFF"}
             </div>
         </div>
 
-        <div style="width: 100%; height: 15px; background: #222; margin-bottom: 35px; overflow: hidden;">
-            <div id="vt-bar-fill" style="width: ${Math.min(percentage, 100)}%; height: 100%; background: #ff0000; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);"></div>
+        <div style="width: 100%; height: 15px; background: var(--vt-track); margin-bottom: 35px; overflow: hidden;">
+            <div id="vt-bar-fill" style="width: ${Math.min(percentage, 100)}%; height: 100%; background: var(--vt-accent); transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);"></div>
         </div>
 
         <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 40px;">
-            <p id="vt-message" style="flex: 3; color: #fff; font-size: 22px; margin: 0; line-height: 1.2; font-weight: bold; text-transform: uppercase;">
+            <p id="vt-message" style="flex: 3; color: var(--vt-text); font-size: 22px; margin: 0; line-height: 1.2; font-weight: bold; text-transform: uppercase;">
                 ${insult}
             </p>
 
             <div style="flex: 1; display: flex; flex-direction: column; align-items: flex-end; gap: 15px;">
-                <button id="vt-sync-btn" style="background: transparent; border: 2px solid #ff0000; color: #ff0000; cursor: pointer; padding: 10px 20px; font-family: monospace; font-weight: 900; font-size: 14px;">
+                <button id="vt-sync-btn" style="background: transparent; border: 2px solid var(--vt-accent); color: var(--vt-accent); cursor: pointer; padding: 10px 20px; font-family: monospace; font-weight: 900; font-size: 14px;">
                     [ REFRESH_STATS ]
                 </button>
 
-                <button id="vt-toggle-dealers" style="background: transparent; border: 2px solid #ff0000; color: #ff0000; cursor: pointer; padding: 10px 20px; font-family: monospace; font-weight: 900; font-size: 14px;">
+                <button id="vt-toggle-dealers" style="background: transparent; border: 2px solid var(--vt-accent); color: var(--vt-accent); cursor: pointer; padding: 10px 20px; font-family: monospace; font-weight: 900; font-size: 14px;">
                     [ SHOW_DEALERS ]
                 </button>
 
-                <div style="border: 1px solid #333; padding: 15px; background: #111; width: 220px; box-sizing: border-box;">
-                    <p id="vt-sync-currentLimit" style="font-size: 12px; margin: 0 0 8px 0; color: #aaa; font-weight: bold;">LIMIT: ${limitMinutes}m</p>
+                <div style="border: 1px solid var(--vt-border-strong); padding: 15px; background: var(--vt-panel-soft); width: 220px; box-sizing: border-box;">
+                    <p id="vt-sync-currentLimit" style="font-size: 12px; margin: 0 0 8px 0; color: var(--vt-muted); font-weight: bold;">LIMIT: ${limitMinutes}m</p>
                     <div style="display: flex; gap: 5px;">
-                        <input type="number" id="vt-limit-input" placeholder="MIN" style="width: 70px; background: #000; border: 1px solid #ff0000; color: #fff; font-family: monospace; padding: 5px;">
-                        <button id="vt-limit-button" style="background: #ff0000; border: none; color: #fff; cursor: pointer; padding: 5px 15px; font-family: monospace; font-weight: bold; flex-grow: 1;">SET</button>
+                        <input type="number" id="vt-limit-input" placeholder="MIN" style="width: 70px; background: var(--vt-input-bg); border: 1px solid var(--vt-accent); color: var(--vt-text); font-family: monospace; padding: 5px;">
+                        <button id="vt-limit-button" style="background: var(--vt-accent); border: none; color: var(--vt-accent-contrast); cursor: pointer; padding: 5px 15px; font-family: monospace; font-weight: bold; flex-grow: 1;">SET</button>
                     </div>
                 </div>
             </div>
@@ -264,10 +329,10 @@ function createDashboard(percentage, insult, limitMinutes, noLimitMode) {
         <div id="vt-dealers-container" style="display: none; margin-top: 30px;">
             <table id="vt-dealers-table" style="width: 100%; border-collapse: collapse; font-family: 'Courier New', monospace;">
                 <thead>
-                    <tr style="border-bottom: 2px solid #ff0000;">
-                        <th style="text-align: left; padding: 10px; color: #ff0000; font-size: 14px; text-transform: uppercase;">CREATOR</th>
-                        <th style="text-align: right; padding: 10px; color: #ff0000; font-size: 14px; text-transform: uppercase;">TIME</th>
-                        <th style="text-align: right; padding: 10px; color: #ff0000; font-size: 14px; text-transform: uppercase;">%</th>
+                    <tr style="border-bottom: 2px solid var(--vt-accent);">
+                        <th style="text-align: left; padding: 10px; color: var(--vt-accent); font-size: 14px; text-transform: uppercase;">CREATOR</th>
+                        <th style="text-align: right; padding: 10px; color: var(--vt-accent); font-size: 14px; text-transform: uppercase;">TIME</th>
+                        <th style="text-align: right; padding: 10px; color: var(--vt-accent); font-size: 14px; text-transform: uppercase;">%</th>
                     </tr>
                 </thead>
                 <tbody id="vt-dealers-tbody"></tbody>
@@ -337,7 +402,7 @@ function renderDealersTable() {
 		if (!dealers || dealers.length === 0) {
 			tbody.innerHTML = `
 				<tr>
-					<td colspan="3" style="padding: 20px; color: #666; text-align: center;">
+					<td colspan="3" style="padding: 20px; color: var(--vt-empty); text-align: center;">
 						NO DATA YET. START WASTING TIME FIRST.
 					</td>
 				</tr>
@@ -347,16 +412,16 @@ function renderDealersTable() {
 
 		dealers.forEach((dealer, index) => {
 			const row = document.createElement("tr");
-			row.style.cssText = `border-bottom: 1px solid #222;`;
+			row.style.cssText = `border-bottom: 1px solid var(--vt-row-border);`;
 
 			row.innerHTML = `
-				<td style="padding: 12px 10px; color: #fff; font-size: 14px;">
+				<td style="padding: 12px 10px; color: var(--vt-text); font-size: 14px;">
 					${index + 1}. ${dealer.creator}
 				</td>
-				<td style="padding: 12px 10px; color: #aaa; font-size: 14px; text-align: right;">
+				<td style="padding: 12px 10px; color: var(--vt-muted); font-size: 14px; text-align: right;">
 					${dealer.timeString}
 				</td>
-				<td style="padding: 12px 10px; color: #ff0000; font-size: 14px; text-align: right; font-weight: bold;">
+				<td style="padding: 12px 10px; color: var(--vt-accent); font-size: 14px; text-align: right; font-weight: bold;">
 					${dealer.percentage}%
 				</td>
 			`;
@@ -446,6 +511,21 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
 		VoidtubeDashboard();
 	}
 });
+
+function onSystemThemeChanged() {
+	const dashboard = document.getElementById("voidtube-dashboard");
+	if (!dashboard) return;
+	applyDashboardThemeVars(dashboard);
+	if (isDealersVisible()) {
+		renderDealersTable();
+	}
+}
+
+if (typeof SYSTEM_THEME_QUERY.addEventListener === "function") {
+	SYSTEM_THEME_QUERY.addEventListener("change", onSystemThemeChanged);
+} else if (typeof SYSTEM_THEME_QUERY.addListener === "function") {
+	SYSTEM_THEME_QUERY.addListener(onSystemThemeChanged);
+}
 
 // Initial load
 applyHomeSheetPreferences();

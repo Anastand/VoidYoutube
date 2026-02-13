@@ -3,6 +3,81 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>VoidTube</title>
+		<style>
+			:root {
+				--vt-bg: #050505;
+				--vt-text: #ffffff;
+				--vt-card-bg: #101010;
+				--vt-card-border: #2b2b2b;
+				--vt-muted: #cfcfcf;
+				--vt-soft: #888888;
+				--vt-input-bg: #000000;
+				--vt-accent: #ff0000;
+				--vt-accent-contrast: #ffffff;
+			}
+
+			@media (prefers-color-scheme: light) {
+				:root {
+					--vt-bg: #f4f5f7;
+					--vt-text: #171717;
+					--vt-card-bg: #ffffff;
+					--vt-card-border: #d4d4d8;
+					--vt-muted: #52525b;
+					--vt-soft: #71717a;
+					--vt-input-bg: #ffffff;
+					--vt-accent: #cc0000;
+					--vt-accent-contrast: #ffffff;
+				}
+			}
+
+			body {
+				background: var(--vt-bg) !important;
+				color: var(--vt-text) !important;
+			}
+
+			#popup-root {
+				border-top-color: var(--vt-accent) !important;
+			}
+
+			#popup-root h1 {
+				color: var(--vt-accent) !important;
+			}
+
+			.vt-card {
+				background: var(--vt-card-bg) !important;
+				border: 1px solid var(--vt-card-border) !important;
+			}
+
+			.vt-muted {
+				color: var(--vt-muted) !important;
+			}
+
+			.vt-soft {
+				color: var(--vt-soft) !important;
+			}
+
+			.vt-input {
+				background: var(--vt-input-bg) !important;
+				border: 1px solid var(--vt-accent) !important;
+				color: var(--vt-text) !important;
+			}
+
+			.vt-btn-outline {
+				background: transparent !important;
+				border: 1px solid var(--vt-accent) !important;
+				color: var(--vt-accent) !important;
+			}
+
+			.vt-btn-primary {
+				background: var(--vt-accent) !important;
+				border: 1px solid var(--vt-accent) !important;
+				color: var(--vt-accent-contrast) !important;
+			}
+
+			#exports-section {
+				border-top: 1px solid var(--vt-card-border) !important;
+			}
+		</style>
 	</head>
 	<body
 		style="
@@ -14,19 +89,20 @@
 			font-family: 'Courier New', monospace;
 		"
 	>
-		<div style="padding: 14px; border-top: 4px solid #ff0000">
+		<div id="popup-root" style="padding: 14px; border-top: 4px solid #ff0000">
 			<h1 style="margin: 0 0 12px 0; font-size: 20px; letter-spacing: 0.6px; color: #ff0000">
 				VOIDTUBE CONTROL
 			</h1>
 
-			<div style="border: 1px solid #2b2b2b; background: #101010; padding: 10px; margin-bottom: 10px">
-				<p id="currentLimit" style="margin: 0 0 8px 0; font-size: 12px; color: #cfcfcf">
+			<div class="vt-card" style="border: 1px solid #2b2b2b; background: #101010; padding: 10px; margin-bottom: 10px">
+				<p id="currentLimit" class="vt-muted" style="margin: 0 0 8px 0; font-size: 12px; color: #cfcfcf">
 					Current Limit: -- minutes
 				</p>
 				<div style="display: flex; gap: 8px">
 					<input
 						type="number"
 						id="limit-input"
+						class="vt-input"
 						placeholder="Minutes"
 						min="1"
 						step="1"
@@ -41,6 +117,7 @@
 					/>
 					<button
 						id="limit-button"
+						class="vt-btn-primary"
 						style="
 							background: #ff0000;
 							border: 1px solid #ff0000;
@@ -56,11 +133,12 @@
 				</div>
 			</div>
 
-				<div style="border: 1px solid #2b2b2b; background: #101010; padding: 10px; margin-bottom: 10px">
+				<div class="vt-card" style="border: 1px solid #2b2b2b; background: #101010; padding: 10px; margin-bottom: 10px">
 					<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px">
-						<span style="font-size: 12px; color: #cfcfcf">Home Sheet Blocker</span>
+						<span class="vt-muted" style="font-size: 12px; color: #cfcfcf">Home Sheet Blocker</span>
 					<button
 						id="toggle-home-sheet"
+						class="vt-btn-outline"
 						style="
 							min-width: 68px;
 							background: transparent;
@@ -76,9 +154,10 @@
 					</button>
 				</div>
 				<div style="display: flex; align-items: center; justify-content: space-between">
-					<span style="font-size: 12px; color: #cfcfcf">Blur Home</span>
+					<span class="vt-muted" style="font-size: 12px; color: #cfcfcf">Blur Home</span>
 					<button
 						id="toggle-home-blur"
+						class="vt-btn-outline"
 						style="
 							min-width: 68px;
 							background: transparent;
@@ -95,10 +174,11 @@
 					</div>
 				</div>
 
-				<div style="border: 1px solid #2b2b2b; background: #101010; padding: 10px; margin-bottom: 10px">
-					<p style="margin: 0 0 8px 0; font-size: 12px; color: #cfcfcf">LOG MODE</p>
+				<div class="vt-card" style="border: 1px solid #2b2b2b; background: #101010; padding: 10px; margin-bottom: 10px">
+					<p class="vt-muted" style="margin: 0 0 8px 0; font-size: 12px; color: #cfcfcf">LOG MODE</p>
 					<button
 						id="toggle-no-limit-mode"
+						class="vt-btn-outline"
 						style="
 							width: 100%;
 							background: transparent;
@@ -112,14 +192,15 @@
 					>
 						LOG MODE: OFF
 					</button>
-					<p style="margin: 8px 0 0; font-size: 11px; color: #888">
+					<p class="vt-soft" style="margin: 8px 0 0; font-size: 11px; color: #888">
 						No blocking. Just logging your activity.
 					</p>
 				</div>
 
-				<div style="border: 1px solid #2b2b2b; background: #101010; padding: 10px; margin-bottom: 10px">
+				<div class="vt-card" style="border: 1px solid #2b2b2b; background: #101010; padding: 10px; margin-bottom: 10px">
 					<button
 						id="export-today-button"
+						class="vt-btn-outline"
 					style="
 						width: 100%;
 						background: transparent;
@@ -137,6 +218,7 @@
 
 				<button
 					id="export-button"
+					class="vt-btn-primary"
 					style="
 						width: 100%;
 						background: #ff0000;
@@ -151,7 +233,7 @@
 					SHOW ALL EXPORT KEYS
 				</button>
 				<div id="exports-section" style="display: none; margin-top: 10px; border-top: 1px solid #2b2b2b; padding-top: 8px">
-					<p id="exports-status" style="margin: 0; font-size: 12px; color: #cfcfcf">No exports loaded.</p>
+					<p id="exports-status" class="vt-muted" style="margin: 0; font-size: 12px; color: #cfcfcf">No exports loaded.</p>
 					<div
 						id="exports-list"
 						style="
