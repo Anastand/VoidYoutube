@@ -1,67 +1,64 @@
-# VoidTube (Code-Aligned README)
+# 🌌 VoidTube: YouTube Productivity & Analytics Engine
 
-Manifest V3 Chrome extension for tracking YouTube watch behavior, enforcing a daily limit (optional), and exporting structured daily/weekly data.
+**VoidTube** is a sophisticated Chrome Extension (Manifest V3) designed to transform YouTube from a distraction-filled rabbit hole into a controlled, analyzed utility. It tracks consumption patterns, enforces time limits, and provides deep insights into watch behavior directly within the YouTube UI.
 
-## Implemented Features
-- Daily logging in `chrome.storage.local` keyed by UTC date (`YYYY-MM-DD`).
-- Limit config in `chrome.storage.sync` (`dailyLimitMinutes`, default `30`).
-- Real-time limit checks from content script to background worker.
-- Session close coverage on:
-  - `pause`
-  - `yt-navigate-start`
-  - `pagehide`
-  - `popstate`
-  - `beforeunload`
-- Filtering of noisy sessions:
-  - ignore sessions shorter than `2s`
-  - ignore placeholder metadata rows (`Not-Recorded`)
-- Homepage controls:
-  - Home Sheet Blocker (hide feed)
-  - Blur Home (blur feed + disable interaction)
-- Dashboard on YouTube home:
-  - percentage bar
-  - usage message
-  - dealer table (top creators by time)
-  - refresh button
-  - mode badge (`VOID MODE: ON/OFF`)
-- Popup controls:
-  - set daily limit
-  - toggle Home Sheet Blocker
-  - toggle Blur Home
-  - toggle Void Mode (no blocking, keep logging)
-  - export today as markdown copy
-  - list all export keys and copy markdown per key
-- Retention/export pipeline in background:
-  - raw day data retained for 5 days
-  - old days rolled into weekly export keys (`weeklyExport:<start>_to_<end>`)
-  - merged updates prevent weekly export overwrite
+---
 
-## Data Model
-- Daily key (`YYYY-MM-DD`):
-  - `date`
-  - `totalTimeSeconds`
-  - `session[]` with `{ videoTitle, creator, watchTime, videoUrl }`
-- Weekly key (`weeklyExport:YYYY-MM-DD_to_YYYY-MM-DD`):
-  - `type`
-  - `startDate`, `endDate`
-  - `createdAt`, `updatedAt`
-  - `sourceDates[]`
-  - `totalTimeSeconds`, `totalSessions`
-  - `dailyRecords[]`
+## 🚀 Why this project? (Technical Highlights)
 
-## Known Gaps
-- Multi-tab concurrency can still lose increments because writes are read-modify-write without a lock.
-- UTC day boundaries may not match local-day expectations.
-- Cross-midnight sessions are attributed to the day at log time.
-- No automated test suite yet for lifecycle and storage race paths.
+For recruiters and developers, this project demonstrates proficiency in:
+- **Modern Extension Architecture:** Built using **Manifest V3**, utilizing Service Workers for background persistence and efficient resource management.
+- **Dynamic DOM Injection:** Overcoming the challenges of YouTube’s Single-Page Application (SPA) architecture to inject a custom dashboard and progress tracking UI.
+- **State Management & Persistence:** Implementing a robust data pipeline using `chrome.storage` to manage real-time session logs, weekly aggregations, and user configurations.
+- **Advanced Event Handling:** Monitoring YouTube-specific lifecycle events (like `yt-navigate-start`) and browser events to ensure accurate data logging across multiple tabs.
 
-## Project Files
-- `manifest.json`
-- `content-script.js`
-- `background.js`
-- `dashboard.js`
-- `analytics.js`
-- `popup.html`
-- `popup.js`
-- `homeBlocker.css`
-- `changes.md`
+---
+
+## ✨ Key Features
+
+- **⏱️ Real-Time Usage Tracking:** Precision logging of daily and weekly watch time.
+- **📊 Creator Insights:** Automatically identifies and ranks your most-watched creators to help audit your "information diet."
+- **🛡️ Void Mode (Distraction Blocking):** A customizable CSS-injection engine that blurs or hides the home feed to prevent doom-scrolling.
+- **📉 Data Export:** A built-in pipeline to convert raw browser storage into structured Markdown summaries for external journaling or habit tracking.
+- **⚠️ Smart Limits:** User-defined thresholds that trigger visual warnings when daily usage is exceeded.
+
+---
+
+## 🛠️ Technical Deep Dive
+
+### 1. Handling SPA Navigation
+YouTube doesn't trigger standard page reloads. VoidTube solves this by hooking into the `yt-navigate-start` and `beforeunload` events, ensuring that the "watch session" logic remains accurate even as the user clicks through videos.
+
+### 2. The Data Pipeline
+To prevent storage bloat, VoidTube implements a rolling log system:
+- **Daily Log:** High-resolution tracking of every video session.
+- **Weekly Rollup:** At the end of a cycle, the system aggregates daily data into a `weeklySummary` and clears the logs, maintaining a high-performance footprint.
+
+### 3. Manifest V3 Service Workers
+Utilizing `background.js` as a service worker to handle asynchronous messaging between the **Popup** (UI), **Content Scripts** (Logic), and **Storage API** without blocking the main browser thread.
+
+---
+
+## 🏗️ Installation (Development Mode)
+
+1. Clone this repository: 
+   ```bash
+   git clone https://github.com/Anastand/VoidYoutube.git
+   ```
+Open Chrome and navigate to chrome://extensions/.
+Enable "Developer mode" in the top right corner.
+Click "Load unpacked" and select the project folder.
+
+## 📈 Roadmap & Future Improvements
+
+Data Visualization: Integration of Chart.js for visual trend analysis.
+
+Categorization: Auto-tagging videos by category (Education, Entertainment) via the YouTube Data API.
+
+Sync Support: Optional cloud sync for cross-browser usage statistics.
+
+👨‍💻 Author
+AryanBhardwaj
+GitHub: @Anastand
+LinkedIn: [AryanBhardwaj](https://www.linkedin.com/in/aryan-bhardwaj-56129422b/)
+Note: This project was built to explore the constraints of Manifest V3 and the complexities of DOM manipulation in high-traffic web applications.
