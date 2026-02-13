@@ -57,8 +57,8 @@ Categorization: Auto-tagging videos by category (Education, Entertainment) via t
 
 Sync Support: Optional cloud sync for cross-browser usage statistics.
 
-👨‍💻 Author
-AryanBhardwaj
-GitHub: @Anastand
-LinkedIn: [AryanBhardwaj](https://www.linkedin.com/in/aryan-bhardwaj-56129422b/)
-Note: This project was built to explore the constraints of Manifest V3 and the complexities of DOM manipulation in high-traffic web applications.
+- 👨‍💻 Author :AryanBhardwaj
+- GitHub: @Anastand
+- LinkedIn: [AryanBhardwaj](https://www.linkedin.com/in/aryan-bhardwaj-56129422b/)
+
+> Note: This project was built to explore the constraints of Manifest V3 and the complexities of DOM manipulation in high-traffic web applications.
